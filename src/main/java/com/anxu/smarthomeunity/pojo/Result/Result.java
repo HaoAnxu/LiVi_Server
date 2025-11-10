@@ -14,15 +14,17 @@ public class Result {
         r.msg = "success";
         return r;
     }
-
-    public static Result success(Object data){
+    public static Result success(String msg){
         Result r = new Result();
         r.code = 1;
-        r.msg = "success";
+        r.msg = msg;
+        return r;
+    }
+    public static Result success(Object data){
+        Result r = success();
         r.data = data;
         return r;
     }
-
     public static Result error(String msg){
         Result r = new Result();
         r.code = 0;

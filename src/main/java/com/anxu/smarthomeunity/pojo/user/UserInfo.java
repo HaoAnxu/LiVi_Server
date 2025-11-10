@@ -18,4 +18,6 @@ public class UserInfo {
     private String signature;//个人签名
     private LocalDateTime createTime;//创建时间
     private LocalDateTime updateTime;//更新时间
+
+    private String verifyCode;//验证码
 }

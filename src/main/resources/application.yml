@@ -6,7 +6,21 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: haomarch7@qq.com
+# 密码是QQ邮箱的授权码，不是登录密码
+    password: oprwrimlirdndcac
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-
+jwt:
+  sign-key: MDYxMU1hcmNodzc=
