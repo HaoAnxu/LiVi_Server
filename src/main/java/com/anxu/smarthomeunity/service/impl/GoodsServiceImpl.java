@@ -30,14 +30,14 @@ public class GoodsServiceImpl implements GoodsService {
         //构建查询条件
         QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
 //        1.固定条件，只查询上架商品
-        queryWrapper.eq("goods_status",1);
+        queryWrapper.eq("goods_status", 1);
 //        2.动态条件，商品名称，非空才匹配
-        if(goodsQuery.getGoodsName() != null && !goodsQuery.getGoodsName().trim().isEmpty()){
-            queryWrapper.like("goods_name",goodsQuery.getGoodsName());
+        if (goodsQuery.getGoodsName() != null && !goodsQuery.getGoodsName().trim().isEmpty()) {
+            queryWrapper.like("goods_name", goodsQuery.getGoodsName());
         }
 //        3.动态条件，商品类型，非空才匹配
-        if(goodsQuery.getGoodsType() != null && !goodsQuery.getGoodsType().trim().isEmpty()){
-            queryWrapper.eq("goods_type",goodsQuery.getGoodsType());
+        if (goodsQuery.getGoodsType() != null && !goodsQuery.getGoodsType().trim().isEmpty()) {
+            queryWrapper.eq("goods_type", goodsQuery.getGoodsType());
         }
 //        4.动态排序
         String sortRule = goodsQuery.getSortRule();
@@ -58,15 +58,15 @@ public class GoodsServiceImpl implements GoodsService {
             queryWrapper.orderByDesc("update_time");
         }
         Page<Goods> resultPage = this.goodsMapper.selectPage(page, queryWrapper);
-//        转换类型
-        return new PageResult(resultPage.getTotal(),resultPage.getRecords());
+        // 转换类型
+        return new PageResult(resultPage.getTotal(), resultPage.getRecords());
     }
 
-     //    更新并重新统计商品评分
+    //    更新并重新统计商品评分
     @Override
     public Integer resetScore() {
         int updateProductCount = this.goodsMapper.updateScore();
-        if(updateProductCount > 0) {
+        if (updateProductCount > 0) {
             log.info("更新商品评分成功，更新商品数量：{}", updateProductCount);
         } else {
             log.info("暂无商品有评论，或所有商品评分已最新，未执行更新");
@@ -79,7 +79,7 @@ public class GoodsServiceImpl implements GoodsService {
     public Goods queryGoodsDetail(Long goodsId) {
         log.info("查询商品详情，商品id：{}", goodsId);
         Goods goods = this.goodsMapper.selectById(goodsId);
-        if(goods == null) {
+        if (goods == null) {
             log.info("商品不存在，商品id：{}", goodsId);
         }
         return goods;
