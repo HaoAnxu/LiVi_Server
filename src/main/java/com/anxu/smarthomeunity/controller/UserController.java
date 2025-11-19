@@ -7,10 +7,7 @@ import com.anxu.smarthomeunity.util.CodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,17 +21,21 @@ public class UserController {
     private RedisTemplate<Object, Object> redisTemplate;
 
     //登录
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public Result login(@RequestBody UserInfo userInfo) {
         log.info("登录请求：{}", userInfo);
         String token = userService.login(userInfo);
         if (token == null) {
             return Result.error("登录失败,Token为空");
         }
-        return Result.success(token);
+        Result result = new Result();
+        result.setCode(1);
+        result.setMsg("登录成功");
+        result.setData(token);
+        return result;
     }
     //注册
-    @PostMapping("/register")
+    @PostMapping("/user/register")
     public Result register(@RequestBody UserInfo userInfo) {
         log.info("注册请求：{}", userInfo);
         Integer rows = userService.register(userInfo);
@@ -44,30 +45,35 @@ public class UserController {
         return Result.success("注册成功");
     }
 
-//    //发送验证码
-//    @PostMapping("/sendCode")
-//    public Result sendCode(@RequestBody UserInfo userInfo) {
-//        log.info("发送验证码请求：{}", userInfo);
-//        String code = CodeUtils.generateVerifyCode();
-//        log.info("生成的验证码：{}", code);
-//        userService.sendVerifyCode(userInfo.getEmail(), code);
-//        // 存储验证码到Redis（有效期5分钟，用于后续校验）
-//        redisTemplate.opsForValue().set("verify_code:" + userInfo.getEmail(), code, 5, TimeUnit.MINUTES);
-//        return Result.success();
-//    }
-//
-//    //校验验证码
-//    @GetMapping("/verifyCode")
-//    public Result verifyCode(@RequestBody UserInfo userInfo) {
-//        String storedCode = redisTemplate.opsForValue().get("verify_code:" + userInfo.getEmail()).toString();
-//        if (storedCode == null) {
-//            return Result.error("验证码不存在");
-//        }
-//        if (!storedCode.equals(userInfo.getVerifyCode())) {
-//            return Result.error("验证码错误");
-//        }
-//        // 验证码校验成功后，删除Redis中的验证码
-//        redisTemplate.delete("verify_code:" + userInfo.getEmail());
-//        return Result.success("验证码校验成功");
-//    }
+    //发送验证码
+    @PostMapping("/user/sendCode")
+    public Result sendCode(@RequestParam String email) {
+        log.info("发送验证码请求：{}", email);
+        String code = CodeUtils.generateVerifyCode();
+        log.info("生成的验证码：{}", code);
+        userService.sendVerifyCode(email, code);
+        // 存储验证码到Redis（有效期5分钟，用于后续校验）
+        redisTemplate.opsForValue().set("verify_code:" + email, code, 5, TimeUnit.MINUTES);
+        return Result.success();
+    }
+
+    //校验验证码
+    @PostMapping("/user/verifyCode")
+    public Result verifyCode(@RequestParam String email, @RequestParam String code) {
+        String storedCode = null;
+        try {
+            storedCode = redisTemplate.opsForValue().get("verify_code:" + email).toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        if (storedCode == null) {
+            return Result.error("验证码不存在");
+        }
+        if (!storedCode.equals(code)) {
+            return Result.error("验证码错误");
+        }
+        // 验证码校验成功后，删除Redis中的验证码
+        redisTemplate.delete("verify_code:" + email);
+        return Result.success();
+    }
 }

@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService {
         Assert.isTrue(StringUtils.hasText(userInfo.getUsername()), "用户名不能为空");
         Assert.isTrue(StringUtils.hasText(userInfo.getPassword()), "密码不能为空");
         Assert.isTrue(StringUtils.hasText(userInfo.getEmail()), "邮箱不能为空");
-        Assert.isTrue(userInfo.getGender() == 0 || userInfo.getGender() == 1, "性别只能为0或1");
-        Assert.isTrue(userInfo.getSignature().length() <= 100, "签名长度不能超过100位");
         Assert.isTrue(userInfo.getEmail().matches("^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$"), "邮箱格式错误");
         Assert.isTrue(userInfo.getPassword().length() >= 6, "密码长度不能小于6位");
         //设置时间
@@ -76,8 +74,6 @@ public class UserServiceImpl implements UserService {
         queryWrapper.eq("email",userInfo.getEmail());
         user = userMapper.selectOne(queryWrapper);
         Assert.isTrue(user == null, "邮箱已存在");
-
-
 
         //加密
         String encrypt = passwordEncoder.encode(userInfo.getPassword());

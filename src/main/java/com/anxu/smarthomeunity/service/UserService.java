@@ -7,6 +7,6 @@ public interface UserService {
     String login(UserInfo userInfo);
     //    注册
     Integer register(UserInfo userInfo);
-
+    //    发送验证码
     void sendVerifyCode(String email, String code);
 }

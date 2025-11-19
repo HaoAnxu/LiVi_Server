@@ -42,7 +42,8 @@ public class ChatServer {
     public void onOpen(Session session, @PathParam("userId") String userId){
         this.session = session;
         this.userId = userId;
-        //把当前连接存入map（用户上线）
+        //而 this 关键字，在 onOpen 方法里，就代表「当前正在处理的这个实例」
+        // （比如用户 1 连接时，this 就是用户 1 的实例；用户 2 连接时，this 就是用户 2 的实例
         onlineUsers.put(userId,this);
         log.info("用户[{}]连接成功，当前在线人数：{}", userId, onlineUsers.size());
         ResultMsg successMsg = new ResultMsg("success", "✅ 连接成功！你是用户[" + userId + "]");
