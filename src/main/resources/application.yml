@@ -10,7 +10,7 @@ spring:
     host: smtp.qq.com
     port: 587
     username: haomarch7@qq.com
-# 密码是QQ邮箱的授权码，不是登录密码
+    # 密码是QQ邮箱的授权码，不是登录密码
     password: oprwrimlirdndcac
     properties:
       mail:
@@ -20,7 +20,7 @@ spring:
             enable: true
     protocol: smtp
 
-# 配置JWT的签名密钥
+# 配置JWT的签名密钥(Base64编码March7)
 jwt:
   sign-key: MDYxMU1hcmNodzc=
   # 过期时间，单位毫秒

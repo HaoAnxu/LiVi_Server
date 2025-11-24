@@ -1,8 +1,11 @@
 package com.anxu.smarthomeunity.service.impl;
 
+import com.anxu.smarthomeunity.mapper.GoodsImageMapper;
 import com.anxu.smarthomeunity.mapper.GoodsMapper;
 import com.anxu.smarthomeunity.model.dto.Result.PageResult;
+import com.anxu.smarthomeunity.model.dto.pub.goods.GoodsDetail;
 import com.anxu.smarthomeunity.model.entity.goods.Goods;
+import com.anxu.smarthomeunity.model.entity.goods.GoodsImage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +14,17 @@ import org.springframework.stereotype.Service;
 import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQuery;
 import com.anxu.smarthomeunity.service.GoodsService;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsMapper goodsMapper;
+    @Autowired
+    private GoodsImageMapper goodsImageMapper;
+
 
     //    查询商品列表
     @Override
@@ -62,6 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public Integer resetScore() {
         int updateProductCount = this.goodsMapper.updateScore();
+
         if (updateProductCount > 0) {
             log.info("更新商品评分成功，更新商品数量：{}", updateProductCount);
         } else {
@@ -72,12 +81,33 @@ public class GoodsServiceImpl implements GoodsService {
 
     //    查询单个商品详情
     @Override
-    public Goods queryGoodsDetail(Long goodsId) {
+    public GoodsDetail queryGoodsDetail(Long goodsId) {
         log.info("查询商品详情，商品id：{}", goodsId);
+        GoodsDetail goodsDetail = new GoodsDetail();
+        //先查详情的基础数据
         Goods goods = this.goodsMapper.selectById(goodsId);
         if (goods == null) {
             log.info("商品不存在，商品id：{}", goodsId);
+            return null;
         }
-        return goods;
+        //将goods转换为goodsDetail
+        goodsDetail.setGoodsId(goods.getGoodsId());
+        goodsDetail.setGoodsName(goods.getGoodsName());
+        goodsDetail.setGoodsType(goods.getGoodsType());
+        goodsDetail.setGoodsPrice(goods.getGoodsPrice());
+        goodsDetail.setGoodsStock(goods.getGoodsStock());
+        goodsDetail.setGoodsSales(goods.getGoodsSales());
+        goodsDetail.setGoodsIntro(goods.getGoodsIntro());
+        goodsDetail.setGoodsStatus(goods.getGoodsStatus());
+        goodsDetail.setGoodsScore(goods.getGoodsScore());
+        goodsDetail.setGoodsCommentCount(goods.getGoodsCommentCount());
+        goodsDetail.setCreateTime(goods.getCreateTime());
+        goodsDetail.setUpdateTime(goods.getUpdateTime());
+        //再查图片
+        QueryWrapper<GoodsImage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("goods_id", goodsId);
+        List<GoodsImage> goodsImageList = this.goodsImageMapper.selectList(queryWrapper);
+        goodsDetail.setGoodsImageList(goodsImageList);
+        return goodsDetail;
     }
 }

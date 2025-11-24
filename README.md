@@ -1,3 +1,16 @@
-# SmartHomeUnity
+# SmartHomeUnity - 智能家居购物商城一体化平台
+一个练手的缝合怪Web应用~
+后端的代码~
 
-暂时需要本地配置mysql，redis，全在本地运行
+## 项目功能
+能访问
+
+## 技术栈
+手+脑子+Ctrl_C+Ctrl_V
+
+## 环境准备
+手机应用商店搜索......
+
+## 安装依赖
+暂时本地的mysql，redis
+

@@ -1,6 +1,6 @@
 package com.anxu.smarthomeunity.controller;
 
-import com.anxu.smarthomeunity.model.entity.goods.Goods;
+import com.anxu.smarthomeunity.model.dto.pub.goods.GoodsDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +39,7 @@ public class GoodsController {
     @PostMapping("/goods/queryGoodsDetail")
     public Result queryGoodsDetail(@RequestParam Long goodsId){
         log.info("查询商品详情，参数：{}",goodsId);
-        Goods goods = goodsService.queryGoodsDetail(goodsId);
-        return Result.success(goods);
+        GoodsDetail goodsDetail = goodsService.queryGoodsDetail(goodsId);
+        return Result.success(goodsDetail);
     }
-
 }

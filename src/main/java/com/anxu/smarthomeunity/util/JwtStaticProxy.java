@@ -24,14 +24,30 @@ public class JwtStaticProxy {
     /**
      * 静态代理：生成JWT令牌
      */
-    public static String generateJwt(Map<String, Object> claims) {
-        return jwtUtils.generateJwt(claims);
+    public static String generateJwt(Integer id,String username) {
+        return jwtUtils.generateJwt(id,username);
     }
 
     /**
-     * 静态代理：解析JWT令牌
+     * 静态代理：校验JWT令牌
      */
-    public static Claims parseJWT(String jwt) {
-        return jwtUtils.parseJWT(jwt);
+    public static boolean validateToken(String token) {
+        return jwtUtils.validateToken(token);
     }
+
+
+    /**
+     * 静态代理：获取用户ID
+     */
+    public static Integer getUserId(String token) {
+        return jwtUtils.getUserId(token);
+    }
+
+    /**
+     * 静态代理：获取用户名
+     */
+    public static String getUsername(String token) {
+        return jwtUtils.getUsername(token);
+    }
+
 }

@@ -46,10 +46,7 @@ public class UserServiceImpl implements UserService {
         Assert.isTrue(matches, "密码错误");
 
         //登录成功，生成JWT令牌然后返回
-        Map<String,Object> dataMap = new HashMap<>();
-        dataMap.put("id",user.getId());
-        dataMap.put("username",user.getUsername());
-        return JwtStaticProxy.generateJwt(dataMap);
+        return JwtStaticProxy.generateJwt(user.getId(),user.getUsername());
     }
     //    用户注册
     @Override
