@@ -18,6 +18,7 @@ import java.util.Map;
  */
 @Component
 public class JwtUtils {
+    //注入要求不能是static，因为static的属性在类加载时就初始化了，而@Value是在Bean初始化时才注入的
     // 签名密钥（通过@Value注入，非static）
     @Value("${jwt.sign-key}")
     private String signKey;

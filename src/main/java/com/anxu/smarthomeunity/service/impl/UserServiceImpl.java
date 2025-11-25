@@ -3,21 +3,25 @@ package com.anxu.smarthomeunity.service.impl;
 import com.anxu.smarthomeunity.mapper.UserMapper;
 import com.anxu.smarthomeunity.model.entity.user.UserInfo;
 import com.anxu.smarthomeunity.service.UserService;
-import com.anxu.smarthomeunity.util.JwtStaticProxy;
+import com.anxu.smarthomeunity.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * 用户服务实现类
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/25 8:54
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private MailSender mailSender;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     //    用户登录
     @Override
@@ -46,8 +52,9 @@ public class UserServiceImpl implements UserService {
         Assert.isTrue(matches, "密码错误");
 
         //登录成功，生成JWT令牌然后返回
-        return JwtStaticProxy.generateJwt(user.getId(),user.getUsername());
+        return jwtUtils.generateJwt(user.getId(),user.getUsername());
     }
+
     //    用户注册
     @Override
     public Integer register(UserInfo userInfo) {
@@ -79,8 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //    发送邮箱验证码
-    @Autowired
-    private JavaMailSender javaMailSender;
+    @Async("taskExecutor")
     @Override
     public void sendVerifyCode(String email, String code) {
         try{

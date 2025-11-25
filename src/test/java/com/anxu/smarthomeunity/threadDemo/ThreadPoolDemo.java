@@ -1,4 +1,4 @@
-package com.anxu.smarthomeunity;
+package com.anxu.smarthomeunity.threadDemo;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,8 +9,6 @@ import java.util.concurrent.Executors;
  * @Author: haoanxu
  * @Date: 2025/11/24 17:53
  */
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ThreadPoolDemo {
@@ -20,7 +18,7 @@ public class ThreadPoolDemo {
         ExecutorService threadPool = Executors.newFixedThreadPool(5);
 
         // 提交任务给线程池
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             int taskId = i;
             threadPool.submit(new Runnable() {
                 @Override
