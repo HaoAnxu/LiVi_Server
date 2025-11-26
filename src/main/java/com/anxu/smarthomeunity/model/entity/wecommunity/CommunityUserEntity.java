@@ -8,20 +8,18 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 圈子信息实体类Entity
+ * 用户-社区关联Entity
  *
  * @Author: haoanxu
- * @Date: 2025/11/26 13:34
+ * @Date: 2025/11/26 14:24
  */
 @Data
-@TableName("pub_community")
-public class CommunityInfoEntity {
-    @TableId(value = "community_id",type = IdType.AUTO)
+@TableName("pub_community_user")
+public class CommunityUserEntity {
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
     private Integer communityId;
-    private String communityName;
-    private String communityImage;
-    private String communityDesc;
-    private Integer communityMembers;
+    private Integer userId;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }

@@ -1,13 +1,15 @@
 package com.anxu.smarthomeunity.mapper;
 
+import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
+import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity;
-import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoRelaEntity;
+import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
- * WeCommunity相关数据库操作Mapper
+ * WeCommunity-Mapper接口
  *
  * @Author: haoanxu
  * @Date: 2025/11/21 15:21
@@ -16,14 +18,26 @@ import java.util.List;
 public interface WeCommunityMapper{
 
     //根据圈子ID查询所有成员ID
-    List<Integer> selectUserIdsByCircleId(Integer circleId);
+    List<Integer> selectUserIdsByCommunityId(Integer communityId);
 
     //插入消息-用户关联信息
-    void insert(CommunityInfoRelaEntity communityInfoRelaEntity);
+    void insert(ChatInfoRelaEntity chatInfoRelaEntity);
 
     //更新阅读状态
     void updateReadStatus(Long msgId, Integer userId);
 
     //查询用户-消息关联信息-未读消息
-    List<CommunityInfoEntity> queryNoReadInfo(Integer circleId, Integer userId);
+    List<ChatInfoEntity> queryNoReadInfo(Integer circleId, Integer userId);
+
+    //查询圈子信息列表
+    List<CommunityInfoEntity> getAllCommunityList();
+
+    //用户加入社区
+    void joinCommunity(CommunityUserEntity communityUserEntity);
+
+    //用户退出社区
+    void deleteByCommunityIdAndUserId(Integer communityId, Integer userId);
+
+    //更新圈子用户数
+    void updateCommunityUserCount(Integer communityId);
 }

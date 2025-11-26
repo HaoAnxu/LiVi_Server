@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @TableName("user_info")
 public class UserInfoEntity {
     @TableId(value = "id",type = IdType.AUTO)
-    private int id;//用户id
+    private Integer id;//用户id
 
     private String username;//用户名
 

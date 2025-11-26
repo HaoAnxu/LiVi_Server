@@ -4,6 +4,12 @@ import com.anxu.smarthomeunity.model.Result.PageResult;
 import com.anxu.smarthomeunity.model.dto.pub.goods.GoodsDetailDto;
 import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQueryDto;
 
+/**
+ * 商品相关服务接口
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/7 13:32
+ */
 public interface GoodsService {
     //    查询商品列表
     PageResult queryGoods(GoodsQueryDto goodsQueryDto);

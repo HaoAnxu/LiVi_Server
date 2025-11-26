@@ -14,9 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQueryDto;
 import com.anxu.smarthomeunity.service.GoodsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+/**
+ * 商品相关服务实现类
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/7 13:32
+ */
 @Slf4j
 @Service
 public class GoodsServiceImpl implements GoodsService {
@@ -68,10 +74,10 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     //    更新并重新统计商品评分
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer resetScore() {
         int updateProductCount = this.goodsMapper.updateScore();
-
         if (updateProductCount > 0) {
             log.info("更新商品评分成功，更新商品数量：{}", updateProductCount);
         } else {

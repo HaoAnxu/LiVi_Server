@@ -8,7 +8,12 @@ import com.anxu.smarthomeunity.model.Result.PageResult;
 import com.anxu.smarthomeunity.model.Result.Result;
 import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQueryDto;
 import com.anxu.smarthomeunity.service.GoodsService;
-
+/**
+ * 商品相关接口
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/7 13:32
+ */
 @Slf4j
 @RestController
 public class GoodsController {

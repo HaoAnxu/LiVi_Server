@@ -2,41 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.anxu.smarthomeunity.mapper.WeCommunityMapper">
-
-    <insert id="insert" parameterType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoRelaEntity">
-        insert into pub_user_community_info_connect (circle_id, user_id,msg_id,read_status)
-        values (#{circleId}, #{userId}, #{msgId}, #{readStatus})
+    <!--    插入用户-消息关联信息    -->
+    <insert id="insert" parameterType="com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity">
+        insert into pub_user_community_info_connect (community_id, user_id, msg_id, read_status)
+        values (#{communityId}, #{userId}, #{msgId}, #{readStatus})
     </insert>
-
+    <!--    更新用户-消息关联信息-已读状态    -->
     <update id="updateReadStatus">
         update pub_user_community_info_connect
         set read_status = 1
-        where msg_id = #{msgId} and user_id = #{userId}
+        where msg_id = #{msgId}
+          and user_id = #{userId}
     </update>
-
-    <select id="selectUserIdsByCircleId" resultType="java.lang.Integer">
-        SELECT user_id FROM pub_community_and_user WHERE circle_id = #{circleId}
+    <!--    更新圈子用户数    -->
+    <update id="updateCommunityUserCount">
+        update pub_community
+        set community_members = (SELECT COUNT(*) FROM pub_community_user WHERE community_id = #{communityId})
+        where community_id = #{communityId}
+    </update>
+    <!--    根据圈子ID查询所有成员ID    -->
+    <select id="selectUserIdsByCommunityId" resultType="java.lang.Integer">
+        SELECT user_id
+        FROM pub_community_user
+        WHERE community_id = #{communityId}
     </select>
-
-    <select id="queryNoReadInfo" resultType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity">
-        SELECT
-            c.msg_id,
-            c.circle_id,
-            c.from_user_id,
-            c.content,
-            c.msg_type,
-            c.create_time
-        FROM
-            pub_community_info c
-                INNER JOIN
-            pub_user_community_info_connect u
-            ON
-                c.msg_id = u.msg_id
-        WHERE
-            u.circle_id = #{circleId}  -- 筛选当前圈子（关联表的圈子ID）
-          AND u.user_id = #{userId}    -- 筛选当前用户（关联表的用户ID）
-          AND u.read_status = 0        -- 未读消息（离线消息）
-        ORDER BY
-            c.create_time ASC;  -- 按消息创建时间升序，保证补推顺序正确
+    <!--    查询用户-消息关联信息-未读消息    -->
+    <select id="queryNoReadInfo" resultType="com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity">
+        SELECT c.msg_id,
+               c.community_id,
+               c.from_user_id,
+               c.content,
+               c.msg_type,
+               c.create_time
+        FROM pub_community_info c
+                 INNER JOIN
+             pub_user_community_info_connect u
+             ON
+                 c.msg_id = u.msg_id
+        WHERE u.community_id = #{communityId} -- 筛选当前圈子（关联表的圈子ID）
+          AND u.user_id = #{userId}           -- 筛选当前用户（关联表的用户ID）
+          AND u.read_status = 0               -- 未读消息（离线消息）
+        ORDER BY c.create_time ASC; -- 按消息创建时间升序，保证补推顺序正确
     </select>
+    <!--    查询圈子信息列表    -->
+    <select id="getAllCommunityList"
+            resultType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity">
+        SELECT *
+        FROM pub_community
+    </select>
+    <!--    用户加入社区    -->
+    <insert id="joinCommunity" parameterType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity">
+        insert into pub_community_user (community_id, user_id, create_time, update_time)
+        values (#{communityId}, #{userId}, #{createTime}, #{updateTime})
+    </insert>
+    <!--    用户退出社区    -->
+    <delete id="deleteByCommunityIdAndUserId">
+        delete
+        from pub_community_user
+        where community_id = #{communityId}
+          and user_id = #{userId}
+    </delete>
 </mapper>

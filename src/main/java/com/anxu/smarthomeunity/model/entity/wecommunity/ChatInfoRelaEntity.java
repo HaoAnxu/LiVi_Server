@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 
 /**
  * 信息关联表Entity
- *
+ * 将用户id，圈子id，消息id，阅读状态关联
  * @Author: haoanxu
  * @Date: 2025/11/21 13:50
  */
 @Data
 @TableName("pub_user_community_info_connect")
-public class CommunityInfoRelaEntity {
+public class ChatInfoRelaEntity {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
@@ -23,7 +23,7 @@ public class CommunityInfoRelaEntity {
 
     private Long msgId;
 
-    private Integer circleId;
+    private Integer communityId;
 
     private Integer readStatus;
 

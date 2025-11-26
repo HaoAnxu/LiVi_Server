@@ -13,7 +13,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
-
+/**
+ * 用户信息相关接口
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/10 16:48
+ */
 @Slf4j
 @RestController
 public class UserController {
