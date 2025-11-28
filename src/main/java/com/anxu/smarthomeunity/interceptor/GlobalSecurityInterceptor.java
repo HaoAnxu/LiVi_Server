@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -44,6 +45,7 @@ public class GlobalSecurityInterceptor implements HandlerInterceptor {
             returnError(response, 400, "请求超时（时间戳无效）");
             return false;
         }
+        log.info("时间戳校验通过");
 
         // 3. 签名校验
         String nonce = request.getHeader("nonce"); // 随机字符串（前端每次请求生成）
@@ -53,6 +55,7 @@ public class GlobalSecurityInterceptor implements HandlerInterceptor {
             returnError(response, 400, "签名无效（请求可能被篡改）");
             return false;
         }
+        log.info("签名校验通过");
 
         // 4. JWT 校验（只对 /permission/** 路径做，登录后才能访问）
         String requestUrl = request.getRequestURI();
@@ -61,22 +64,18 @@ public class GlobalSecurityInterceptor implements HandlerInterceptor {
             // JWT 非空校验
             if (!StringUtils.hasLength(token)) {
                 returnError(response, 401, "未登录，缺少 Token");
+                log.warn("未登录，缺少 Token - 路径: {}", requestUrl);
                 return false;
             }
             // JWT 合法性校验（防伪造、防过期）
             if (!jwtUtils.validateToken(token)) {
                 returnError(response, 401, "Token 非法或已过期");
+                log.warn("Token 非法或已过期 - 路径: {}", requestUrl);
                 return false;
             }
             // 提取用户信息存入 ThreadLocal（供后续业务使用）
             Integer userId = jwtUtils.getUserId(token);
             CurrentHolder.setCurrentId(userId);
-        }
-
-        // 如果是 WebSocket 握手请求，允许协议升级
-        if (request.getHeader("Upgrade") != null && "websocket".equalsIgnoreCase(request.getHeader("Upgrade"))) {
-            response.setHeader("Upgrade", "websocket");
-            response.setHeader("Connection", "Upgrade");
         }
 
         // 所有校验通过，放行

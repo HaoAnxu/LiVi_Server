@@ -2,11 +2,10 @@ package com.anxu.smarthomeunity.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.anxu.smarthomeunity.model.Result.Result;
-import com.anxu.smarthomeunity.model.dto.user.UserInfoDto;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.anxu.smarthomeunity.service.UserService;
 import com.anxu.smarthomeunity.util.CodeUtils;
-import com.anxu.smarthomeunity.util.CurrentHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -90,10 +89,10 @@ public class UserController {
     @GetMapping("/permission/user/userCenter/basicInfo")
     public Result userCenterBasicInfo(@RequestParam Integer userId){
         log.info("用户中心_基础信息查询请求：{}", userId);
-        UserInfoDto userInfoDto = userService.getUserInfo(userId);
-        if (userInfoDto == null) {
+        UserInfoVO userInfoVO = userService.getUserInfo(userId);
+        if (userInfoVO == null) {
             return Result.error("用户不存在");
         }
-        return Result.success(userInfoDto);
+        return Result.success(userInfoVO);
     }
 }

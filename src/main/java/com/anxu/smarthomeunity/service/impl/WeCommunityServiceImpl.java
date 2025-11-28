@@ -3,12 +3,15 @@ package com.anxu.smarthomeunity.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.anxu.smarthomeunity.mapper.ChatInfoMapper;
 import com.anxu.smarthomeunity.mapper.WeCommunityMapper;
-import com.anxu.smarthomeunity.model.dto.wecommunity.CommunityInfoDto;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
+import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
+import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity;
 import com.anxu.smarthomeunity.service.WeCommunityService;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +99,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
      * @return 社区信息列表（无数据时返回空列表，避免null）
      */
     @Override
-    public List<CommunityInfoDto> getAllCommunityList() {
+    public List<CommunityInfoVO> getAllCommunityList() {
         //更新所有圈子用户数
         weCommunityMapper.getAllCommunityList().forEach(
                 communityInfoEntity -> {
@@ -108,7 +111,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
         if (communityList == null) {
             return List.of();
         } else {
-            return BeanUtil.copyToList(communityList, CommunityInfoDto.class);
+            return BeanUtil.copyToList(communityList, CommunityInfoVO.class);
         }
     }
 
@@ -139,5 +142,69 @@ public class WeCommunityServiceImpl implements WeCommunityService {
     public void exitCommunity(Integer communityId, Integer userId) {
         // 删除用户-社区关联信息
         weCommunityMapper.deleteByCommunityIdAndUserId(communityId, userId);
+    }
+
+    /**
+     * 查询用户是否加入了该社区
+     *
+     * @param communityId 社区ID
+     * @param userId      用户ID
+     * @return true-加入了该社区，false-未加入该社区
+     */
+    @Override
+    public boolean isJoinCommunity(Integer communityId, Integer userId) {
+        // 查询用户-社区关联信息是否存在
+        CommunityUserEntity communityUserEntity = weCommunityMapper.selectByCommunityIdAndUserId(communityId, userId);
+        return communityUserEntity != null;
+    }
+
+     /**
+     * 查询单个社区详情
+     *
+     * @param communityId 社区ID
+     * @return 社区详情（无数据时返回null）
+     */
+    @Override
+    public CommunityInfoVO getCommunityDetail(Integer communityId) {
+        // 查询社区详情
+        CommunityInfoEntity communityInfoEntity = weCommunityMapper.queryCommunityDetail(communityId);
+        if (communityInfoEntity == null) {
+            return null;
+        }
+        return BeanUtil.copyProperties(communityInfoEntity, CommunityInfoVO.class);
+    }
+
+    /**
+     * 查询聊天记录
+     *
+     * @param queryDTO 查询参数
+     * @return 聊天记录VO（无数据时返回null）
+     */
+    @Override
+    public ChatHistoryVO getChatHistory(ChatHistoryQueryDTO queryDTO) {
+        ChatHistoryVO result = new ChatHistoryVO();
+
+        // 1. 分页查询：msgId < lastMsgId 的前pageSize条，按msgId降序
+        List<ChatInfoEntity> historyList = weCommunityMapper.selectChatHistoryByPage(
+                queryDTO.getCommunityId(),
+                queryDTO.getLastMsgId(),
+                queryDTO.getPageSize()
+        );
+
+        // 2. 封装返回结果
+        result.setHistoryList(historyList);
+
+        // 3. 判断是否还有更多数据：如果查到的条数等于pageSize，说明可能还有；否则没有
+        boolean hasMore = !CollectionUtils.isEmpty(historyList) && historyList.size() == queryDTO.getPageSize();
+        result.setHasMore(hasMore);
+
+        // 4. 设置当前最老的msgId（供下一次查询用）
+        if (!CollectionUtils.isEmpty(historyList)) {
+            // 因为按msgId降序，最后一条是最老的
+            result.setCurrentLastMsgId(historyList.get(historyList.size() - 1).getMsgId());
+        } else {
+            result.setCurrentLastMsgId(queryDTO.getLastMsgId()); // 无数据时设为查询的lastMsgId
+        }
+        return result;
     }
 }

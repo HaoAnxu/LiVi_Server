@@ -1,7 +1,7 @@
 package com.anxu.smarthomeunity.controller;
 
 import com.anxu.smarthomeunity.model.Result.Result;
-import com.anxu.smarthomeunity.model.dto.wecommunity.CommunityInfoDto;
+import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.service.WeCommunityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +32,32 @@ public class WeCommunityController {
     @GetMapping("/permission/wecommunity/getCommunityList")
     public Result getWeCommunity() {
         log.info("获取所有社区列表");
-        List<CommunityInfoDto> allCommunityList = weCommunityService.getAllCommunityList();
+        List<CommunityInfoVO> allCommunityList = weCommunityService.getAllCommunityList();
         return Result.success(allCommunityList);
     }
+
+    //查询单个社区详情
+    @GetMapping("/permission/wecommunity/getCommunityDetail")
+    public Result getCommunityDetail(@RequestParam("communityId") Integer communityId) {
+        log.info("查询社区详情：{}", communityId);
+        CommunityInfoVO communityInfoVO = weCommunityService.getCommunityDetail(communityId);
+        return Result.success(communityInfoVO);
+    }
+
+    //查询用户是否加入了该社区
+    @PostMapping("/permission/wecommunity/isJoinCommunity")
+    public Result isJoinCommunity(@RequestParam("communityId") Integer communityId,
+                                  @RequestParam("userId") Integer userId) {
+        boolean isJoin = weCommunityService.isJoinCommunity(communityId, userId);
+        log.info("查询用户是否加入了该社区：{}", isJoin);
+        return Result.success(isJoin);
+    }
+
     //用户加入社区
     @PostMapping("/permission/wecommunity/joinCommunity")
     public Result joinCommunity(@RequestParam("communityId") Integer communityId,
                                 @RequestParam("userId") Integer userId) {
-        log.info("用户加入社区");
+        log.info("用户{}加入社区：{}", userId, communityId);
         weCommunityService.joinCommunity(communityId, userId);
         return Result.success();
     }

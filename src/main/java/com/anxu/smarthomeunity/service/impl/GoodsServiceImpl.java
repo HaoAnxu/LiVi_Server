@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.anxu.smarthomeunity.mapper.GoodsImageMapper;
 import com.anxu.smarthomeunity.mapper.GoodsMapper;
 import com.anxu.smarthomeunity.model.Result.PageResult;
-import com.anxu.smarthomeunity.model.dto.pub.goods.GoodsDetailDto;
+import com.anxu.smarthomeunity.model.vo.goods.GoodsDetailVO;
 import com.anxu.smarthomeunity.model.entity.goods.GoodsEntity;
 import com.anxu.smarthomeunity.model.entity.goods.GoodsImageEntity;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQueryDto;
+import com.anxu.smarthomeunity.model.dto.goods.GoodsQueryDto;
 import com.anxu.smarthomeunity.service.GoodsService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +88,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     //    查询单个商品详情
     @Override
-    public GoodsDetailDto queryGoodsDetail(Long goodsId) {
+    public GoodsDetailVO queryGoodsDetail(Long goodsId) {
         log.info("查询商品详情，商品id：{}", goodsId);
         //先查详情的基础数据
         GoodsEntity goodsEntity = this.goodsMapper.selectById(goodsId);
@@ -97,12 +97,12 @@ public class GoodsServiceImpl implements GoodsService {
             return null;
         }
         //将goods转换为goodsDetail
-        GoodsDetailDto goodsDetailDto = BeanUtil.copyProperties(goodsEntity, GoodsDetailDto.class);
+        GoodsDetailVO goodsDetailVO = BeanUtil.copyProperties(goodsEntity, GoodsDetailVO.class);
         //再查图片
         QueryWrapper<GoodsImageEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("goods_id", goodsId);
         List<GoodsImageEntity> goodsImageEntityList = this.goodsImageMapper.selectList(queryWrapper);
-        goodsDetailDto.setGoodsImageEntityList(goodsImageEntityList);
-        return goodsDetailDto;
+        goodsDetailVO.setGoodsImageEntityList(goodsImageEntityList);
+        return goodsDetailVO;
     }
 }

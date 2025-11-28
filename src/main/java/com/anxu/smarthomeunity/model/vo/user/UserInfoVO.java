@@ -1,4 +1,4 @@
-package com.anxu.smarthomeunity.model.dto.user;
+package com.anxu.smarthomeunity.model.vo.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoDto {
+public class UserInfoVO {
     private int id;//用户id
 
     private String username;//用户名

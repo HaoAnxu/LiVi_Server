@@ -27,7 +27,7 @@ public interface WeCommunityMapper{
     void updateReadStatus(Long msgId, Integer userId);
 
     //查询用户-消息关联信息-未读消息
-    List<ChatInfoEntity> queryNoReadInfo(Integer circleId, Integer userId);
+    List<ChatInfoEntity> queryNoReadInfo(Integer communityId, Integer userId);
 
     //查询圈子信息列表
     List<CommunityInfoEntity> getAllCommunityList();
@@ -40,4 +40,13 @@ public interface WeCommunityMapper{
 
     //更新圈子用户数
     void updateCommunityUserCount(Integer communityId);
+
+    //根据圈子ID和用户ID查询用户是否加入了该社区
+    CommunityUserEntity selectByCommunityIdAndUserId(Integer communityId, Integer userId);
+
+    //根据圈子ID查询圈子详情
+    CommunityInfoEntity queryCommunityDetail(Integer communityId);
+
+    //查询聊天记录-分页
+    List<ChatInfoEntity> selectChatHistoryByPage(Integer communityId, Long lastMsgId, Integer pageSize);
 }

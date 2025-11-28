@@ -1,8 +1,8 @@
 package com.anxu.smarthomeunity.service;
 
 import com.anxu.smarthomeunity.model.Result.PageResult;
-import com.anxu.smarthomeunity.model.dto.pub.goods.GoodsDetailDto;
-import com.anxu.smarthomeunity.model.dto.pub.goods.query.GoodsQueryDto;
+import com.anxu.smarthomeunity.model.vo.goods.GoodsDetailVO;
+import com.anxu.smarthomeunity.model.dto.goods.GoodsQueryDto;
 
 /**
  * 商品相关服务接口
@@ -16,5 +16,5 @@ public interface GoodsService {
     //    更新并重新统计商品评分
     Integer resetScore();
     //    查询单个商品详情
-    GoodsDetailDto queryGoodsDetail(Long goodsId);
+    GoodsDetailVO queryGoodsDetail(Long goodsId);
 }

@@ -1,4 +1,4 @@
-package com.anxu.smarthomeunity.model.dto.wecommunity;
+package com.anxu.smarthomeunity.model.vo.wecommunity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommunityInfoDto {
+public class CommunityInfoVO {
     private Integer communityId;
     private String communityName;
     private String communityImage;

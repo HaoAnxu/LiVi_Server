@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 聊天信息MP接口
  *

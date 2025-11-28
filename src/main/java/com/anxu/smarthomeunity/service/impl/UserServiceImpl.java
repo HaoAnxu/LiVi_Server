@@ -2,7 +2,7 @@ package com.anxu.smarthomeunity.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.anxu.smarthomeunity.mapper.UserMapper;
-import com.anxu.smarthomeunity.model.dto.user.UserInfoDto;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.anxu.smarthomeunity.service.UserService;
 import com.anxu.smarthomeunity.util.JwtUtils;
@@ -103,14 +103,14 @@ public class UserServiceImpl implements UserService {
     }
     //    用户中心_基础信息查询
     @Override
-    public UserInfoDto getUserInfo(Integer userId) {
+    public UserInfoVO getUserInfo(Integer userId) {
         UserInfoEntity userInfoEntity = userMapper.selectById(userId);
         //校验用户是否存在
         Assert.isTrue(userInfoEntity != null, "用户不存在");
         //将实体转换为DTO
-        UserInfoDto userInfoDto = new UserInfoDto();
-        BeanUtil.copyProperties(userInfoEntity, userInfoDto);
-        return userInfoDto;
+        UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtil.copyProperties(userInfoEntity, userInfoVO);
+        return userInfoVO;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.anxu.smarthomeunity.service;
 
-import com.anxu.smarthomeunity.model.dto.wecommunity.CommunityInfoDto;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
+import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
+import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 
@@ -29,11 +31,20 @@ public interface WeCommunityService {
     List<ChatInfoEntity> getOfflineMessages(Integer circleId, Integer userId);
 
     //获取所有社区信息列表
-    List<CommunityInfoDto> getAllCommunityList();
+    List<CommunityInfoVO> getAllCommunityList();
 
     //用户加入社区
     void joinCommunity(Integer communityId, Integer userId);
 
     //用户退出社区
     void exitCommunity(Integer communityId, Integer userId);
+
+    //查询用户是否加入了该社区
+    boolean isJoinCommunity(Integer communityId, Integer userId);
+
+    //查询单个社区详情
+    CommunityInfoVO getCommunityDetail(Integer communityId);
+
+    //查询聊天记录
+    ChatHistoryVO getChatHistory(ChatHistoryQueryDTO queryDTO);
 }

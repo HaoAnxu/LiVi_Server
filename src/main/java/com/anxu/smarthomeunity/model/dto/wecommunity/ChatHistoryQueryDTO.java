@@ -1,0 +1,18 @@
+package com.anxu.smarthomeunity.model.dto.wecommunity;
+import lombok.Data;
+/**
+ * 聊天历史记录查询DTO
+ *
+ * @Author: haoanxu
+ * @Date: 2025/11/28 14:11
+ */
+
+@Data
+public class ChatHistoryQueryDTO {
+    // 社区ID
+    private Integer communityId;
+    // 锚点msgId（首次传0，后续传当前加载的最老的msgId）
+    private Long lastMsgId;
+    // 每页条数（固定50，也可前端自定义）
+    private Integer pageSize = 50;
+}

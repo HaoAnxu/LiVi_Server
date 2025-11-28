@@ -1,8 +1,7 @@
 package com.anxu.smarthomeunity.service;
 
-import com.anxu.smarthomeunity.model.dto.user.UserInfoDto;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 用户相关服务接口
@@ -18,7 +17,7 @@ public interface UserService {
     //    发送验证码
     void sendVerifyCode(String email, String code);
     //    用户中心_基础信息查询
-    UserInfoDto getUserInfo(Integer userId);
+    UserInfoVO getUserInfo(Integer userId);
     //根据用户名查询用户id
     Integer getUserId(String username);
 }

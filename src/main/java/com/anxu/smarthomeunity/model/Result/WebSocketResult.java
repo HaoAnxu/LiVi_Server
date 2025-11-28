@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WebSocketResult {
-    private String type;
+    private String msgType;
     private String data;
 }

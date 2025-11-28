@@ -1,4 +1,4 @@
-package com.anxu.smarthomeunity.model.dto.pub.goods;
+package com.anxu.smarthomeunity.model.vo.goods;
 
 import com.anxu.smarthomeunity.model.entity.goods.GoodsCommentEntity;
 import com.anxu.smarthomeunity.model.entity.goods.GoodsImageEntity;
@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GoodsDetailDto {
+public class GoodsDetailVO {
     private Integer goodsId;//商品id,主键,自增
     private String goodsName;//商品名称
     private String goodsType;//商品类型-关联设备类型

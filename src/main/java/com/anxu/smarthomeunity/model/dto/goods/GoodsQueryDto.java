@@ -1,4 +1,4 @@
-package com.anxu.smarthomeunity.model.dto.pub.goods.query;
+package com.anxu.smarthomeunity.model.dto.goods;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

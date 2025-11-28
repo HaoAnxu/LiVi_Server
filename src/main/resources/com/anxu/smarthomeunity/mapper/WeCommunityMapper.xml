@@ -50,6 +50,31 @@
         SELECT *
         FROM pub_community
     </select>
+    <select id="selectByCommunityIdAndUserId"
+            resultType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity">
+        SELECT *
+        FROM pub_community_user
+        WHERE community_id = #{communityId}
+          AND user_id = #{userId}
+    </select>
+    <select id="queryCommunityDetail"
+            resultType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity">
+        SELECT *
+        FROM pub_community
+        WHERE community_id = #{communityId}
+    </select>
+    <!-- 查询聊天记录-分页 -->
+    <select id="selectChatHistoryByPage"
+            resultType="com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity">
+        SELECT *
+        FROM pub_community_info
+        WHERE community_id = #{communityId}
+        <if test="lastMsgId != 0">
+            AND msg_id &lt; #{lastMsgId}
+        </if>
+        ORDER BY msg_id DESC
+        LIMIT #{pageSize}
+    </select>
     <!--    用户加入社区    -->
     <insert id="joinCommunity" parameterType="com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity">
         insert into pub_community_user (community_id, user_id, create_time, update_time)
