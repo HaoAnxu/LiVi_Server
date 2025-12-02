@@ -56,6 +56,10 @@ public class UserController {
     //发送验证码
     @PostMapping("/user/sendCode")
     public Result sendCode(@RequestParam String email) {
+        //先判断邮箱是否存在
+        if (userService.isEmailExist(email)) {
+            return Result.error("邮箱已经存在，不能重复注册");
+        }
         log.info("发送验证码请求：{}", email);
         String code = CodeUtils.generateVerifyCode();
         log.info("生成的验证码：{}", code);
@@ -82,6 +86,16 @@ public class UserController {
         }
         // 验证码校验成功后，删除Redis中的验证码
         redisTemplate.delete("verify_code:" + email);
+        return Result.success();
+    }
+
+    //判断用户名是否已经存在
+    @PostMapping("/user/checkUsername")
+    public Result checkUsername(@RequestParam String username) {
+        log.info("判断用户名是否已经存在请求：{}", username);
+        if (userService.isUsernameExist(username)) {
+            return Result.error("用户名已经存在");
+        }
         return Result.success();
     }
 

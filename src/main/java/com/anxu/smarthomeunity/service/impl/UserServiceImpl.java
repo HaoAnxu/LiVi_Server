@@ -7,6 +7,7 @@ import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.anxu.smarthomeunity.service.UserService;
 import com.anxu.smarthomeunity.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
  * @Author: haoanxu
  * @Date: 2025/11/25 8:54
  */
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<UserInfoEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", userInfoEntity.getUsername());
         UserInfoEntity user = userMapper.selectOne(queryWrapper);
+        //校验用户是否存在
         Assert.notNull(user, "用户不存在");
         //校验密码
         boolean matches = passwordEncoder.matches(userInfoEntity.getPassword(), user.getPassword());
@@ -120,5 +123,23 @@ public class UserServiceImpl implements UserService {
         UserInfoEntity user = userMapper.selectOne(queryWrapper);
         Assert.isTrue(user != null, "用户不存在");
         return user.getId();
+    }
+
+    //根据邮箱查询邮箱是否存在
+    @Override
+    public boolean isEmailExist(String email) {
+        QueryWrapper<UserInfoEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        UserInfoEntity user = userMapper.selectOne(queryWrapper);
+        return user != null;
+    }
+    //判断用户名是否已经存在
+    @Override
+    public boolean isUsernameExist(String username) {
+        QueryWrapper<UserInfoEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        UserInfoEntity user = userMapper.selectOne(queryWrapper);
+        System.out.println(user);
+        return user != null;
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface WeCommunityService {
     //保存消息到数据库-返回msg_id
-    Long saveGroupMessage(ChatInfoEntity chatInfoEntity);
+    Integer saveGroupMessage(ChatInfoEntity chatInfoEntity);
 
     //获取圈子所有成员ID
     List<Integer> getCommunityAllMembers(Integer communityId);
@@ -25,7 +25,7 @@ public interface WeCommunityService {
     void saveUserMessageConnect(ChatInfoRelaEntity chatInfoRelaEntity);
 
     //更新阅读状态
-    void updateReadStatus(Long msgId, Integer userId);
+    void updateReadStatus(Integer msgId, Integer userId);
 
     //查询用户在对应圈子里的未读消息
     List<ChatInfoEntity> getOfflineMessages(Integer circleId, Integer userId);

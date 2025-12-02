@@ -2,8 +2,11 @@ package com.anxu.smarthomeunity.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.anxu.smarthomeunity.mapper.ChatInfoMapper;
+import com.anxu.smarthomeunity.mapper.UserMapper;
 import com.anxu.smarthomeunity.mapper.WeCommunityMapper;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetail;
+import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
@@ -31,6 +34,8 @@ public class WeCommunityServiceImpl implements WeCommunityService {
     private ChatInfoMapper chatInfoMapper;
     @Autowired
     private WeCommunityMapper weCommunityMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 保存消息到数据库-返回消息ID
@@ -39,11 +44,11 @@ public class WeCommunityServiceImpl implements WeCommunityService {
      * @return msg_id
      */
     @Override
-    public Long saveGroupMessage(ChatInfoEntity chatInfoEntity) {
+    public Integer saveGroupMessage(ChatInfoEntity chatInfoEntity) {
         // 保存消息到数据库
         boolean result = chatInfoMapper.insert(chatInfoEntity) > 0;
         if (result) {
-            Long msgId = chatInfoEntity.getMsgId();
+            Integer msgId = chatInfoEntity.getMsgId();
             return msgId;
         }
         return null;
@@ -77,7 +82,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
      * @param userId 用户ID
      */
     @Override
-    public void updateReadStatus(Long msgId, Integer userId) {
+    public void updateReadStatus(Integer msgId, Integer userId) {
         weCommunityMapper.updateReadStatus(msgId, userId);
     }
 
@@ -185,7 +190,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
         ChatHistoryVO result = new ChatHistoryVO();
 
         // 1. 分页查询：msgId < lastMsgId 的前pageSize条，按msgId降序
-        List<ChatInfoEntity> historyList = weCommunityMapper.selectChatHistoryByPage(
+        List<ChatInfoDetail> historyList = weCommunityMapper.selectChatHistoryByPage(
                 queryDTO.getCommunityId(),
                 queryDTO.getLastMsgId(),
                 queryDTO.getPageSize()
@@ -205,6 +210,14 @@ public class WeCommunityServiceImpl implements WeCommunityService {
         } else {
             result.setCurrentLastMsgId(queryDTO.getLastMsgId()); // 无数据时设为查询的lastMsgId
         }
+
+        //给列表每个元素添加用户名和头像
+        historyList.forEach(
+                chatInfoDetail -> {
+                    chatInfoDetail.setName(userMapper.selectById(chatInfoDetail.getFromUserId()).getUsername());
+                    chatInfoDetail.setAvatar(userMapper.selectById(chatInfoDetail.getFromUserId()).getAvatar());
+                }
+        );
         return result;
     }
 }

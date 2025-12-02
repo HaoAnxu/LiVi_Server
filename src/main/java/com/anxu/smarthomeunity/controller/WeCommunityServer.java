@@ -17,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,7 +95,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
                 log.info("收到查询历史记录请求：{}", message);
                 ChatHistoryQueryDTO queryDTO = new ChatHistoryQueryDTO();
                 queryDTO.setCommunityId((Integer) session.getAttributes().get("communityId"));
-                queryDTO.setLastMsgId(msgJson.getLongValue("lastMsgId"));
+                queryDTO.setLastMsgId((Integer) msgJson.get("lastMsgId"));
                 if (msgJson.containsKey("pageSize")){
                     queryDTO.setPageSize(msgJson.getInteger("pageSize"));
                 }
@@ -116,13 +117,15 @@ public class WeCommunityServer extends TextWebSocketHandler {
             //补全必要字段（从路径参数获取，前端不用传）
             chatInfoEntity.setCommunityId(communityId);    // 社区ID
             chatInfoEntity.setFromUserId(userId);    // 发送者ID
+            chatInfoEntity.setCreateTime(LocalDateTime.now());    // 创建时间
+            chatInfoEntity.setUpdateTime(LocalDateTime.now());    // 更新时间
 
             //保存消息到数据库，获取自增msgId
-            Long msgId = weCommunityService.saveGroupMessage(chatInfoEntity);
+            Integer msgId = weCommunityService.saveGroupMessage(chatInfoEntity);
             if (msgId == null) {
                 log.error("消息发送失败：数据库存储失败");
                 WebSocketResult webSocketResult = new WebSocketResult("error", "消息发送失败：服务器内部错误");
-                sendMessage(session, JSON.toJSONString(webSocketResult)); // 【修改】传递当前session参数
+                sendMessage(session, JSON.toJSONString(webSocketResult)); //传递当前session参数
                 return;
             }
             //把msgId回写到实体，供后面的方法用，无需定义外部变量
@@ -202,7 +205,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
             String messageJson = JSON.toJSONString(chatInfoEntity);
             WebSocketResult realtimeResult = new WebSocketResult("realtime", messageJson);
             String pushMessage = JSON.toJSONString(realtimeResult);
-
+            System.out.println(realtimeResult);
             // 1. 查社区所有成员（从用户-社区关联表 pub_community_and_user）
             List<Integer> allMemberIds = weCommunityService.getCommunityAllMembers(communityId);
             if (allMemberIds == null || allMemberIds.isEmpty()) {
@@ -302,7 +305,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
                 session.sendMessage(new TextMessage(message));
             }
         } catch (IOException e) {
-            // 【修改】动态获取userId，避免依赖实例属性
+            // 动态获取userId，避免依赖实例属性
             Integer userId = session != null ? (Integer) session.getAttributes().get("userId") : null;
             log.error("给用户[{}]发消息失败：{}", userId, message, e);
         }

@@ -35,7 +35,6 @@ public class WeCommunityController {
         List<CommunityInfoVO> allCommunityList = weCommunityService.getAllCommunityList();
         return Result.success(allCommunityList);
     }
-
     //查询单个社区详情
     @GetMapping("/permission/wecommunity/getCommunityDetail")
     public Result getCommunityDetail(@RequestParam("communityId") Integer communityId) {

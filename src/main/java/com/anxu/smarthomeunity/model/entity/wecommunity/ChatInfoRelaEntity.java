@@ -21,7 +21,7 @@ public class ChatInfoRelaEntity {
 
     private Integer userId;
 
-    private Long msgId;
+    private Integer msgId;
 
     private Integer communityId;
 

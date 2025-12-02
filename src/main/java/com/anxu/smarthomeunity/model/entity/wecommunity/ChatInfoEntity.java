@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @TableName("pub_community_info")
 public class ChatInfoEntity {
     @TableId(value = "msg_id", type = IdType.AUTO)
-    private Long msgId; // 消息唯一ID
+    private Integer msgId; // 消息唯一ID
 
     private Integer communityId; // 圈子ID
 

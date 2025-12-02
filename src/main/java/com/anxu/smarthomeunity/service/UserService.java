@@ -20,4 +20,8 @@ public interface UserService {
     UserInfoVO getUserInfo(Integer userId);
     //根据用户名查询用户id
     Integer getUserId(String username);
+    //根据邮箱查询邮箱是否存在
+    boolean isEmailExist(String email);
+    //判断用户名是否已经存在
+    boolean isUsernameExist(String username);
 }

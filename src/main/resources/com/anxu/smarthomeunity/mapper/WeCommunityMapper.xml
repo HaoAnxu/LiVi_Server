@@ -64,8 +64,8 @@
         WHERE community_id = #{communityId}
     </select>
     <!-- 查询聊天记录-分页 -->
-    <select id="selectChatHistoryByPage"
-            resultType="com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity">
+     <select id="selectChatHistoryByPage"
+            resultType="com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetail">
         SELECT *
         FROM pub_community_info
         WHERE community_id = #{communityId}
