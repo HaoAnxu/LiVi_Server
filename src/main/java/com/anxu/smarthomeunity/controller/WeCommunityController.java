@@ -1,6 +1,7 @@
 package com.anxu.smarthomeunity.controller;
 
 import com.anxu.smarthomeunity.model.Result.Result;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.service.WeCommunityService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,13 @@ public class WeCommunityController {
         log.info("查询社区详情：{}", communityId);
         CommunityInfoVO communityInfoVO = weCommunityService.getCommunityDetail(communityId);
         return Result.success(communityInfoVO);
+    }
+    //查询社区成员信息列表
+    @GetMapping("/permission/wecommunity/getCommunityMemberList")
+    public Result getCommunityAllMembers(@RequestParam("communityId") Integer communityId) {
+        log.info("查询社区所有成员：{}", communityId);
+        List<UserInfoVO> allMembers = weCommunityService.getCommunityAllMembersInfo(communityId);
+        return Result.success(allMembers);
     }
 
     //查询用户是否加入了该社区

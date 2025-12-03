@@ -27,7 +27,7 @@
         WHERE community_id = #{communityId}
     </select>
     <!--    查询用户-消息关联信息-未读消息    -->
-    <select id="queryNoReadInfo" resultType="com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity">
+     <select id="queryNoReadInfo" resultType="com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO">
         SELECT c.msg_id,
                c.community_id,
                c.from_user_id,
@@ -64,15 +64,15 @@
         WHERE community_id = #{communityId}
     </select>
     <!-- 查询聊天记录-分页 -->
-     <select id="selectChatHistoryByPage"
-            resultType="com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetail">
+    <select id="selectChatHistoryByPage"
+            resultType="com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO">
         SELECT *
         FROM pub_community_info
         WHERE community_id = #{communityId}
         <if test="lastMsgId != 0">
             AND msg_id &lt; #{lastMsgId}
         </if>
-        ORDER BY msg_id ASC
+        ORDER BY msg_id DESC
         LIMIT #{pageSize}
     </select>
     <!--    用户加入社区    -->

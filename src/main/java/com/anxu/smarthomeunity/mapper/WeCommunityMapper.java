@@ -1,6 +1,6 @@
 package com.anxu.smarthomeunity.mapper;
 
-import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetail;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity;
@@ -28,7 +28,7 @@ public interface WeCommunityMapper{
     void updateReadStatus(Integer msgId, Integer userId);
 
     //查询用户-消息关联信息-未读消息
-    List<ChatInfoEntity> queryNoReadInfo(Integer communityId, Integer userId);
+    List<ChatInfoDetailDTO> queryNoReadInfo(Integer communityId, Integer userId);
 
     //查询社区信息列表
     List<CommunityInfoEntity> getAllCommunityList();
@@ -49,5 +49,5 @@ public interface WeCommunityMapper{
     CommunityInfoEntity queryCommunityDetail(Integer communityId);
 
     //查询聊天记录-分页
-    List<ChatInfoDetail> selectChatHistoryByPage(Integer communityId, Integer lastMsgId, Integer pageSize);
+    List<ChatInfoDetailDTO> selectChatHistoryByPage(Integer communityId, Integer lastMsgId, Integer pageSize);
 }

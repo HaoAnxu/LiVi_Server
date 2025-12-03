@@ -5,8 +5,9 @@ import com.anxu.smarthomeunity.mapper.ChatInfoMapper;
 import com.anxu.smarthomeunity.mapper.UserMapper;
 import com.anxu.smarthomeunity.mapper.WeCommunityMapper;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
-import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetail;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
@@ -14,6 +15,7 @@ import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity;
 import com.anxu.smarthomeunity.service.WeCommunityService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,7 +96,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
      * @return 未读消息列表（无数据时返回空列表，避免null）
      */
     @Override
-    public List<ChatInfoEntity> getOfflineMessages(Integer communityId, Integer userId) {
+    public List<ChatInfoDetailDTO> getOfflineMessages(Integer communityId, Integer userId) {
         return weCommunityMapper.queryNoReadInfo(communityId, userId);
     }
 
@@ -190,7 +192,7 @@ public class WeCommunityServiceImpl implements WeCommunityService {
         ChatHistoryVO result = new ChatHistoryVO();
 
         // 1. 分页查询：msgId < lastMsgId 的前pageSize条，按msgId降序
-        List<ChatInfoDetail> historyList = weCommunityMapper.selectChatHistoryByPage(
+        List<ChatInfoDetailDTO> historyList = weCommunityMapper.selectChatHistoryByPage(
                 queryDTO.getCommunityId(),
                 queryDTO.getLastMsgId(),
                 queryDTO.getPageSize()
@@ -213,11 +215,27 @@ public class WeCommunityServiceImpl implements WeCommunityService {
 
         //给列表每个元素添加用户名和头像
         historyList.forEach(
-                chatInfoDetail -> {
-                    chatInfoDetail.setName(userMapper.selectById(chatInfoDetail.getFromUserId()).getUsername());
-                    chatInfoDetail.setAvatar(userMapper.selectById(chatInfoDetail.getFromUserId()).getAvatar());
+                chatInfoDetailDTO -> {
+                    chatInfoDetailDTO.setName(userMapper.selectById(chatInfoDetailDTO.getFromUserId()).getUsername());
+                    chatInfoDetailDTO.setAvatar(userMapper.selectById(chatInfoDetailDTO.getFromUserId()).getAvatar());
                 }
         );
         return result;
+    }
+
+    /**
+     * 查询社区所有成员信息
+     *
+     * @param communityId 社区ID
+     * @return 成员信息列表（无数据时返回空列表，避免null）
+     */
+    @Override
+    public List<UserInfoVO> getCommunityAllMembersInfo(Integer communityId) {
+        List<UserInfoEntity> userInfoEntityList = userMapper.selectMemberByCommunityId(communityId);
+        if (userInfoEntityList == null) {
+            return List.of();
+        } else {
+            return BeanUtil.copyToList(userInfoEntityList, UserInfoVO.class);
+        }
     }
 }

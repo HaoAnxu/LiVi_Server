@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatInfoDetail extends ChatInfoEntity {
+public class ChatInfoDetailDTO extends ChatInfoEntity {
     private String name; // 发送者用户名
     private String avatar; // 发送者头像
 }

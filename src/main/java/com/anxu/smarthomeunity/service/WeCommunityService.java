@@ -1,6 +1,8 @@
 package com.anxu.smarthomeunity.service;
 
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
+import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.CommunityInfoVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
@@ -28,7 +30,7 @@ public interface WeCommunityService {
     void updateReadStatus(Integer msgId, Integer userId);
 
     //查询用户在对应圈子里的未读消息
-    List<ChatInfoEntity> getOfflineMessages(Integer circleId, Integer userId);
+    List<ChatInfoDetailDTO> getOfflineMessages(Integer communityId, Integer userId);
 
     //获取所有社区信息列表
     List<CommunityInfoVO> getAllCommunityList();
@@ -47,4 +49,7 @@ public interface WeCommunityService {
 
     //查询聊天记录
     ChatHistoryVO getChatHistory(ChatHistoryQueryDTO queryDTO);
+
+    //查询社区所有成员信息
+    List<UserInfoVO> getCommunityAllMembersInfo(Integer communityId);
 }

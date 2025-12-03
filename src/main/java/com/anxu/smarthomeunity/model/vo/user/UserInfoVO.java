@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfoVO {
-    private int id;//用户id
+    private Integer id;//用户id
 
     private String username;//用户名
 
@@ -25,6 +25,8 @@ public class UserInfoVO {
     private Integer gender;//性别(0 表示男，1 表示女)
 
     private String signature;//个人签名
+
+    private String avatar;//头像
 
     private LocalDateTime createTime;//创建时间
 

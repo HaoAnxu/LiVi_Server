@@ -1,9 +1,12 @@
 package com.anxu.smarthomeunity.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.anxu.smarthomeunity.mapper.UserMapper;
 import com.anxu.smarthomeunity.model.Result.WebSocketResult;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
+import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
 import com.anxu.smarthomeunity.model.vo.wecommunity.ChatHistoryVO;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
@@ -17,7 +20,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +42,8 @@ public class WeCommunityServer extends TextWebSocketHandler {
 
     @Autowired
     private WeCommunityService weCommunityService;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 连接建立成功时触发（替代原@OnOpen注解）
@@ -89,7 +93,6 @@ public class WeCommunityServer extends TextWebSocketHandler {
             //获取消息类型
             JSONObject msgJson = JSONObject.parseObject(message);
             String msgType = msgJson.getString("msgType");
-            System.out.println(msgType);
             //处理查询历史记录的类型
             if("request_chat_history".equals(msgType)){
                 log.info("收到查询历史记录请求：{}", message);
@@ -105,7 +108,6 @@ public class WeCommunityServer extends TextWebSocketHandler {
                         JSON.toJSONString(chatHistoryVO)
                 );
                 sendMessage(session, JSON.toJSONString(result));
-                System.out.println("发送历史记录响应：" + JSON.toJSONString(result));
                 return;
             }
             // 从握手拦截器存入的属性中获取参数
@@ -117,8 +119,6 @@ public class WeCommunityServer extends TextWebSocketHandler {
             //补全必要字段（从路径参数获取，前端不用传）
             chatInfoEntity.setCommunityId(communityId);    // 社区ID
             chatInfoEntity.setFromUserId(userId);    // 发送者ID
-            chatInfoEntity.setCreateTime(LocalDateTime.now());    // 创建时间
-            chatInfoEntity.setUpdateTime(LocalDateTime.now());    // 更新时间
 
             //保存消息到数据库，获取自增msgId
             Integer msgId = weCommunityService.saveGroupMessage(chatInfoEntity);
@@ -130,9 +130,11 @@ public class WeCommunityServer extends TextWebSocketHandler {
             }
             //把msgId回写到实体，供后面的方法用，无需定义外部变量
             chatInfoEntity.setMsgId(msgId);
-
+            ChatInfoDetailDTO chatInfoDetailDTO = BeanUtil.copyProperties(chatInfoEntity, ChatInfoDetailDTO.class);
+            chatInfoDetailDTO.setName(userMapper.selectById(userId).getUsername());
+            chatInfoDetailDTO.setAvatar(userMapper.selectById(userId).getAvatar());
             //广播消息给社区所有成员（在线+离线）
-            broadcastMessage(chatInfoEntity, communityId);
+            broadcastMessage(chatInfoDetailDTO, communityId);
 
         } catch (Exception e) {
             log.error("处理消息失败", e);
@@ -200,12 +202,11 @@ public class WeCommunityServer extends TextWebSocketHandler {
     /**
      * 广播消息给社区所有成员（在线+离线）
      */
-    private void broadcastMessage(ChatInfoEntity chatInfoEntity, Integer communityId) { // 【修改】新增communityId参数
+    private void broadcastMessage(ChatInfoDetailDTO chatInfoDetailDTO, Integer communityId) { // 【修改】新增communityId参数
         try {
-            String messageJson = JSON.toJSONString(chatInfoEntity);
+            String messageJson = JSON.toJSONString(chatInfoDetailDTO);
             WebSocketResult realtimeResult = new WebSocketResult("realtime", messageJson);
             String pushMessage = JSON.toJSONString(realtimeResult);
-            System.out.println(realtimeResult);
             // 1. 查社区所有成员（从用户-社区关联表 pub_community_and_user）
             List<Integer> allMemberIds = weCommunityService.getCommunityAllMembers(communityId);
             if (allMemberIds == null || allMemberIds.isEmpty()) {
@@ -228,18 +229,18 @@ public class WeCommunityServer extends TextWebSocketHandler {
                         //数据库插入已读关联记录
                         ChatInfoRelaEntity connect = new ChatInfoRelaEntity();
                         connect.setUserId(memberId);
-                        connect.setMsgId(chatInfoEntity.getMsgId());
+                        connect.setMsgId(chatInfoDetailDTO.getMsgId());
                         connect.setCommunityId(communityId);
                         connect.setReadStatus(1); // 已读
                         weCommunityService.saveUserMessageConnect(connect);
                         log.info("已给在线成员[{}]推送消息并创建已读记录", memberId);
                     } else {
                         // 异常：在线用户无连接，按离线处理
-                        handleOfflineMember(chatInfoEntity, memberId, communityId);
+                        handleOfflineMember(chatInfoDetailDTO, memberId, communityId);
                     }
                 } else {
                     // 离线成员：创建未读关联记录
-                    handleOfflineMember(chatInfoEntity, memberId, communityId);
+                    handleOfflineMember(chatInfoDetailDTO, memberId, communityId);
                 }
             }
 
@@ -251,11 +252,11 @@ public class WeCommunityServer extends TextWebSocketHandler {
     /**
      * 处理离线成员：创建未读关联记录
      */
-    private void handleOfflineMember(ChatInfoEntity chatInfoEntity, Integer memberId, Integer communityId) { // 【修改】新增communityId参数
+    private void handleOfflineMember(ChatInfoDetailDTO chatInfoDetailDTO, Integer memberId, Integer communityId) { // 【修改】新增communityId参数
         try {
             ChatInfoRelaEntity connect = new ChatInfoRelaEntity();
             connect.setUserId(memberId);
-            connect.setMsgId(chatInfoEntity.getMsgId());
+            connect.setMsgId(chatInfoDetailDTO.getMsgId());
             connect.setCommunityId(communityId); // 使用传入的communityId，替代原实例属性
             connect.setReadStatus(0); // 未读
             weCommunityService.saveUserMessageConnect(connect);
@@ -271,7 +272,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
     private void pushOfflineMessages(WebSocketSession session, Integer communityId, Integer userId) { // 【修改】新增session、communityId、userId参数
         try {
             // 1. 查数据库：用户在该社区的未读消息
-            List<ChatInfoEntity> offlineMessages = weCommunityService.getOfflineMessages(communityId, userId);
+            List<ChatInfoDetailDTO> offlineMessages = weCommunityService.getOfflineMessages(communityId, userId);
             if (offlineMessages == null || offlineMessages.isEmpty()) {
                 log.info("用户[{}]社区[{}]无离线消息", userId, communityId);
                 return;
@@ -279,7 +280,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
 
             // 2. 遍历补推
             log.info("给用户[{}]补推离线消息{}条", userId, offlineMessages.size());
-            for (ChatInfoEntity offlineMsg : offlineMessages) {
+            for (ChatInfoDetailDTO offlineMsg : offlineMessages) {
                 String messageJson = JSON.toJSONString(offlineMsg);
                 WebSocketResult realtimeResult = new WebSocketResult("offline", messageJson);
                 String pushMessage = JSON.toJSONString(realtimeResult);

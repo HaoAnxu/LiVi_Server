@@ -3,6 +3,9 @@ package com.anxu.smarthomeunity.mapper;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
 /**
  * 用户相关MP接口
  *
@@ -11,4 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserMapper extends BaseMapper<UserInfoEntity> {
+    //根据社区id查询所有成员
+    List<UserInfoEntity> selectMemberByCommunityId(Integer communityId);
 }

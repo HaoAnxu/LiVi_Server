@@ -13,6 +13,6 @@ public class ChatHistoryQueryDTO {
     private Integer communityId;
     // 锚点msgId（首次传0，后续传当前加载的最老的msgId）
     private Integer lastMsgId;
-    // 每页条数（固定50，也可前端自定义）
-    private Integer pageSize = 50;
+    // 每页条数
+    private Integer pageSize;
 }
