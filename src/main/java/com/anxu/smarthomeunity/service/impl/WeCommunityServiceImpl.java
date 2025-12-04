@@ -1,9 +1,9 @@
 package com.anxu.smarthomeunity.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.anxu.smarthomeunity.mapper.ChatInfoMapper;
-import com.anxu.smarthomeunity.mapper.UserMapper;
-import com.anxu.smarthomeunity.mapper.WeCommunityMapper;
+import com.anxu.smarthomeunity.mapper.weCommunity.ChatInfoMapper;
+import com.anxu.smarthomeunity.mapper.user.UserMapper;
+import com.anxu.smarthomeunity.mapper.weCommunity.WeCommunityMapper;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
@@ -15,7 +15,6 @@ import com.anxu.smarthomeunity.model.entity.wecommunity.ChatInfoRelaEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityInfoEntity;
 import com.anxu.smarthomeunity.model.entity.wecommunity.CommunityUserEntity;
 import com.anxu.smarthomeunity.service.WeCommunityService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

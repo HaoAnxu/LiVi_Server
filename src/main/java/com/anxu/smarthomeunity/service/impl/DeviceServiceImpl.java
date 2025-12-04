@@ -1,0 +1,90 @@
+package com.anxu.smarthomeunity.service.impl;
+
+import cn.hutool.core.bean.BeanUtil;
+import com.anxu.smarthomeunity.mapper.device.DeviceInfoMapper;
+import com.anxu.smarthomeunity.model.dto.device.DeviceInfoDTO;
+import com.anxu.smarthomeunity.model.entity.device.DeviceInfoEntity;
+import com.anxu.smarthomeunity.model.vo.device.DeviceInfoVO;
+import com.anxu.smarthomeunity.service.DeviceService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 设备服务实现类
+ *
+ * @Author: haoanxu
+ * @Date: 2025/12/4 11:09
+ */
+@Slf4j
+@Service
+public class DeviceServiceImpl implements DeviceService {
+
+    @Autowired
+    private DeviceInfoMapper deviceInfoMapper;
+
+    /**
+     * 查询用户所有设备信息列表
+     *
+     * @param userId 用户ID
+     * @return 设备信息实体列表
+     */
+    @Override
+    public List<DeviceInfoVO> queryMyDeviceList(Integer userId) {
+        QueryWrapper<DeviceInfoEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        List<DeviceInfoEntity> deviceInfoEntityList = deviceInfoMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(deviceInfoEntityList, DeviceInfoVO.class);
+    }
+
+    /**
+     * 查询单个设备信息
+     *
+     * @param deviceId 设备ID
+     * @return 设备信息VO
+     */
+    @Override
+    public DeviceInfoVO queryMyDevice(Integer deviceId) {
+        DeviceInfoEntity deviceInfoEntity = deviceInfoMapper.selectById(deviceId);
+        return BeanUtil.copyProperties(deviceInfoEntity, DeviceInfoVO.class);
+    }
+
+    /**
+     * 更改设备执行状态
+     *
+     * @param deviceId    设备ID
+     * @param deviceStatus 设备状态
+     * @return 是否成功
+     */
+    @Override
+    public boolean changeStatus(Integer deviceId, Integer deviceStatus) {
+        deviceInfoMapper.updateByDeviceId(deviceId, deviceStatus);
+        return true;
+    }
+
+    /**
+     * 添加新设备
+     *
+     * @param deviceInfoDTO 设备信息DTO
+     * @return 是否成功
+     */
+    @Override
+    public boolean addDevice(DeviceInfoDTO deviceInfoDTO) {
+        DeviceInfoEntity deviceInfoEntity = BeanUtil.copyProperties(deviceInfoDTO, DeviceInfoEntity.class);
+        return deviceInfoMapper.insert(deviceInfoEntity) > 0;
+    }
+    /**
+     * 删除设备
+     *
+     * @param deviceId 设备ID
+     * @return 是否成功
+     */
+    @Override
+    public boolean deleteDevice(Integer deviceId) {
+        return deviceInfoMapper.deleteById(deviceId) > 0;
+    }
+
+}

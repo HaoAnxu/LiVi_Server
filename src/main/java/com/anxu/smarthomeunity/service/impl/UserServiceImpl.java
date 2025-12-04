@@ -1,7 +1,7 @@
 package com.anxu.smarthomeunity.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.anxu.smarthomeunity.mapper.UserMapper;
+import com.anxu.smarthomeunity.mapper.user.UserMapper;
 import com.anxu.smarthomeunity.model.vo.user.UserInfoVO;
 import com.anxu.smarthomeunity.model.entity.user.UserInfoEntity;
 import com.anxu.smarthomeunity.service.UserService;

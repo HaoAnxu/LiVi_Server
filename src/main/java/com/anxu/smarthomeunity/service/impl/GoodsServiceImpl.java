@@ -1,8 +1,8 @@
 package com.anxu.smarthomeunity.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.anxu.smarthomeunity.mapper.GoodsImageMapper;
-import com.anxu.smarthomeunity.mapper.GoodsMapper;
+import com.anxu.smarthomeunity.mapper.goods.GoodsImageMapper;
+import com.anxu.smarthomeunity.mapper.goods.GoodsMapper;
 import com.anxu.smarthomeunity.model.Result.PageResult;
 import com.anxu.smarthomeunity.model.vo.goods.GoodsDetailVO;
 import com.anxu.smarthomeunity.model.entity.goods.GoodsEntity;
@@ -12,7 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.anxu.smarthomeunity.model.dto.goods.GoodsQueryDto;
+import com.anxu.smarthomeunity.model.dto.goods.GoodsQueryDTO;
 import com.anxu.smarthomeunity.service.GoodsService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,7 @@ public class GoodsServiceImpl implements GoodsService {
 
     //    查询商品列表
     @Override
-    public PageResult queryGoods(GoodsQueryDto goodsQueryDto) {
+    public PageResult queryGoods(GoodsQueryDTO goodsQueryDto) {
         //创建分页对象
         Page<GoodsEntity> page = new Page<>(goodsQueryDto.getPage(), goodsQueryDto.getPageSize());
         //构建查询条件

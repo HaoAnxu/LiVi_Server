@@ -1,6 +1,6 @@
 package com.anxu.smarthomeunity.reflect;
 
-// 自定义注解：字段描述（需先定义）
+// 自定义注解：字段描述
 import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anxu.smarthomeunity.mapper.device.DeviceInfoMapper">
+
+    <!--更新设备信息的设备状态为指定值 -->
+    <update id="updateByDeviceId">
+        update device_info
+        set device_status = #{deviceStatus}
+        where device_id = #{deviceId}
+    </update>
+</mapper>

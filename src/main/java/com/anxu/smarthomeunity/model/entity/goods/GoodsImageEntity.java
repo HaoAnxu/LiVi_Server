@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
  * @Date: 2025/11/24 10:58
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName("pub_goods_image")
 public class GoodsImageEntity {
     @TableId(value = "image_id",type = IdType.AUTO)

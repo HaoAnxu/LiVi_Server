@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName("user_info")
 public class UserInfoEntity {
     @TableId(value = "id",type = IdType.AUTO)

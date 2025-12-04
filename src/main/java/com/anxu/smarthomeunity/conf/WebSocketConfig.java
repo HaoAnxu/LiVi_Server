@@ -1,7 +1,7 @@
 package com.anxu.smarthomeunity.conf;
 
 import com.anxu.smarthomeunity.controller.WeCommunityServer;
-import com.anxu.smarthomeunity.interceptor.WebSocketHandshakeSecurityInterceptor;
+import com.anxu.smarthomeunity.common.interceptor.WebSocketHandshakeSecurityInterceptor;
 import com.anxu.smarthomeunity.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

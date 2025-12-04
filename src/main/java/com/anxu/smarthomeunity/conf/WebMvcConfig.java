@@ -1,6 +1,6 @@
 package com.anxu.smarthomeunity.conf;
 
-import com.anxu.smarthomeunity.interceptor.GlobalSecurityInterceptor;
+import com.anxu.smarthomeunity.common.interceptor.GlobalSecurityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

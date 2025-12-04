@@ -3,9 +3,9 @@ package com.anxu.smarthomeunity.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.anxu.smarthomeunity.emums.webSocket.MsgTypeEnum;
-import com.anxu.smarthomeunity.emums.webSocket.ReadStatusEnum;
-import com.anxu.smarthomeunity.mapper.UserMapper;
+import com.anxu.smarthomeunity.common.emums.webSocket.MsgTypeEnum;
+import com.anxu.smarthomeunity.common.emums.webSocket.ReadStatusEnum;
+import com.anxu.smarthomeunity.mapper.user.UserMapper;
 import com.anxu.smarthomeunity.model.Result.WebSocketResult;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatHistoryQueryDTO;
 import com.anxu.smarthomeunity.model.dto.wecommunity.ChatInfoDetailDTO;
@@ -89,7 +89,7 @@ public class WeCommunityServer extends TextWebSocketHandler {
         try {
             //处理心跳 - 不记录心跳包日志
             if(MsgTypeEnum.PING.getCode().equals(message)){
-                sendMessage(session, "pong");
+                sendMessage(session, MsgTypeEnum.PONG.getCode());
                 return;
             }
             //获取消息类型
