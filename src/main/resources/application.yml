@@ -3,10 +3,16 @@ spring:
     name: SmartHomeUnity
   datasource:
     # 配置数据库连接，允许批量查询
-    url: jdbc:mysql://localhost:3306/smarthomeunity?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
+    url: jdbc:mysql://47.93.213.152:3307/smarthomeunity?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
     username: root
-    password: root
+    password: 1qaz@WSX#EDC4rfv
     driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 47.93.213.152  # Redis服务器IP
+      port: 6379           # Redis端口
+      password: 1qaz@WSX#EDC4rfv  # Redis密码
+      database: 0          # 默认数据库
   mail:
     host: smtp.qq.com
     port: 587

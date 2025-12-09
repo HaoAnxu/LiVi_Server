@@ -18,4 +18,6 @@ public class DeviceInfoDTO {
     private Integer roomId;
     private String deviceType;
     private String deviceName;
+    private Integer deviceStatus;
+    private String deviceImage;
 }

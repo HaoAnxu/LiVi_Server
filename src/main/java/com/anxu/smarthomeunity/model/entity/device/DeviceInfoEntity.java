@@ -29,7 +29,7 @@ public class DeviceInfoEntity {
 
     private Integer deviceStatus;
 
-    private Integer deviceImage;
+    private String deviceImage;
 
     private LocalDateTime createTime;
 
