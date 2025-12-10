@@ -19,6 +19,8 @@ public class DeviceInfoEntity {
     @TableId(value = "device_id", type = IdType.AUTO)
     private Integer deviceId;
 
+    private Integer familyId;//家庭id
+
     private Integer userId;
 
     private Integer roomId;

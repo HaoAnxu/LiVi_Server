@@ -9,4 +9,11 @@
         set device_status = #{deviceStatus}
         where device_id = #{deviceId}
     </update>
+    <!--根据用户id查询用户所有家庭信息-->
+    <select id="queryMyFamily" resultType="com.anxu.smarthomeunity.model.vo.user.UserFamilyVO">
+        select uf.family_id,uf.family_name from user_family uf
+        inner join user_family_relation ufr
+        on uf.family_id = ufr.family_id
+        where ufr.user_id = #{userId}
+    </select>
 </mapper>

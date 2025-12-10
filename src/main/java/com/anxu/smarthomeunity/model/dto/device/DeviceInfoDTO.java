@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceInfoDTO {
+    private Integer familyId;//家庭id
     private Integer userId;
     private Integer roomId;
     private String deviceType;

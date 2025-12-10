@@ -3,6 +3,7 @@ package com.anxu.smarthomeunity.service;
 import com.anxu.smarthomeunity.model.dto.device.DeviceInfoDTO;
 import com.anxu.smarthomeunity.model.dto.device.DeviceTaskDTO;
 import com.anxu.smarthomeunity.model.vo.device.DeviceInfoVO;
+import com.anxu.smarthomeunity.model.vo.user.UserFamilyVO;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface DeviceService {
     //查询所有设备信息
-    List<DeviceInfoVO> queryMyDeviceList(Integer userId);
+    List<DeviceInfoVO> queryMyDeviceList(Integer familyId);
     //查询单个设备信息
     DeviceInfoVO queryMyDevice(Integer deviceId);
     //更改设备执行状态
@@ -23,4 +24,6 @@ public interface DeviceService {
     boolean addDevice(DeviceInfoDTO deviceInfoDTO);
     //删除设备
     boolean deleteDevice(Integer deviceId);
+    //查询用户所有家庭信息
+    List<UserFamilyVO> queryMyFamily(Integer userId);
 }

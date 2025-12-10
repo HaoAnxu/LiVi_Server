@@ -24,14 +24,24 @@ public class DeviceController {
     @Autowired
     private DeviceTaskService deviceTaskService;
 
-    //获取所有设备信息列表
-    @GetMapping("/permission/device/queryMyDeviceList")
-    public Result queryMyDeviceList(@RequestParam Integer userId) {
-        log.info("查询所有设备信息列表，参数：{}", userId);
+    //查询用户家庭信息
+    @GetMapping("/permission/device/queryMyFamilyList")
+    public Result queryMyFamily(@RequestParam Integer userId) {
+        log.info("查询用户家庭信息，参数：{}", userId);
         if (userId == null) {
             return Result.error("用户ID不能为空");
         }
-        return Result.success(deviceService.queryMyDeviceList(userId));
+        return Result.success(deviceService.queryMyFamily(userId));
+    }
+
+    //获取所有设备信息列表
+    @GetMapping("/permission/device/queryMyDeviceList")
+    public Result queryMyDeviceList(@RequestParam Integer familyId) {
+        log.info("查询所有设备信息列表，参数：{}", familyId);
+        if (familyId == null) {
+            return Result.error("家庭ID不能为空");
+        }
+        return Result.success(deviceService.queryMyDeviceList(familyId));
     }
 
     //获取单个设备信息

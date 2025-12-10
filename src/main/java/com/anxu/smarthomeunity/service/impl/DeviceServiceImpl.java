@@ -5,6 +5,7 @@ import com.anxu.smarthomeunity.mapper.device.DeviceInfoMapper;
 import com.anxu.smarthomeunity.model.dto.device.DeviceInfoDTO;
 import com.anxu.smarthomeunity.model.entity.device.DeviceInfoEntity;
 import com.anxu.smarthomeunity.model.vo.device.DeviceInfoVO;
+import com.anxu.smarthomeunity.model.vo.user.UserFamilyVO;
 import com.anxu.smarthomeunity.service.DeviceService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,13 @@ public class DeviceServiceImpl implements DeviceService {
     /**
      * 查询用户所有设备信息列表
      *
-     * @param userId 用户ID
+     * @param familyId 家庭ID
      * @return 设备信息实体列表
      */
     @Override
-    public List<DeviceInfoVO> queryMyDeviceList(Integer userId) {
+    public List<DeviceInfoVO> queryMyDeviceList(Integer familyId) {
         QueryWrapper<DeviceInfoEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId);
+        queryWrapper.eq("family_id", familyId);
         List<DeviceInfoEntity> deviceInfoEntityList = deviceInfoMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(deviceInfoEntityList, DeviceInfoVO.class);
     }
@@ -85,6 +86,11 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public boolean deleteDevice(Integer deviceId) {
         return deviceInfoMapper.deleteById(deviceId) > 0;
+    }
+
+    @Override
+    public List<UserFamilyVO> queryMyFamily(Integer userId) {
+        return deviceInfoMapper.queryMyFamily(userId);
     }
 
 }
