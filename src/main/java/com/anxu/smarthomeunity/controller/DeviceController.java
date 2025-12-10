@@ -34,6 +34,16 @@ public class DeviceController {
         return Result.success(deviceService.queryMyFamily(userId));
     }
 
+    //查询家庭匹配房间列表
+    @GetMapping("/permission/device/queryMyRoomList")
+    public Result queryMyRoomList(@RequestParam Integer familyId) {
+        log.info("查询家庭匹配房间列表，参数：{}", familyId);
+        if (familyId == null) {
+            return Result.error("家庭ID不能为空");
+        }
+        return Result.success(deviceService.queryMyRoomList(familyId));
+    }
+
     //获取所有设备信息列表
     @GetMapping("/permission/device/queryMyDeviceList")
     public Result queryMyDeviceList(@RequestParam Integer familyId) {

@@ -5,6 +5,7 @@ import com.anxu.smarthomeunity.mapper.device.DeviceInfoMapper;
 import com.anxu.smarthomeunity.model.dto.device.DeviceInfoDTO;
 import com.anxu.smarthomeunity.model.entity.device.DeviceInfoEntity;
 import com.anxu.smarthomeunity.model.vo.device.DeviceInfoVO;
+import com.anxu.smarthomeunity.model.vo.user.UserFamilyRoomVO;
 import com.anxu.smarthomeunity.model.vo.user.UserFamilyVO;
 import com.anxu.smarthomeunity.service.DeviceService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -91,6 +92,11 @@ public class DeviceServiceImpl implements DeviceService {
     @Override
     public List<UserFamilyVO> queryMyFamily(Integer userId) {
         return deviceInfoMapper.queryMyFamily(userId);
+    }
+
+    @Override
+    public List<UserFamilyRoomVO> queryMyRoomList(Integer familyId) {
+        return deviceInfoMapper.queryMyRoomList(familyId);
     }
 
 }

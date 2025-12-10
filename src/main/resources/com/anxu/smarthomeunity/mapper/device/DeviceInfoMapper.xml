@@ -16,4 +16,9 @@
         on uf.family_id = ufr.family_id
         where ufr.user_id = #{userId}
     </select>
+    <!--根据家庭id查询家庭所有房间信息-->
+    <select id="queryMyRoomList" resultType="com.anxu.smarthomeunity.model.vo.user.UserFamilyRoomVO">
+        select ufr.room_id,ufr.room_name from user_family_room ufr
+        where ufr.family_id = #{familyId}
+    </select>
 </mapper>

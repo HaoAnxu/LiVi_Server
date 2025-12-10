@@ -11,7 +11,7 @@ public class Result {
     public static Result success(){
         Result r = new Result();
         r.code = 1;
-        r.msg = "success";
+        r.msg = "操作成功";
         return r;
     }
     public static Result success(String msg){

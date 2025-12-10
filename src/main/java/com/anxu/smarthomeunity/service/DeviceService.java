@@ -3,6 +3,7 @@ package com.anxu.smarthomeunity.service;
 import com.anxu.smarthomeunity.model.dto.device.DeviceInfoDTO;
 import com.anxu.smarthomeunity.model.dto.device.DeviceTaskDTO;
 import com.anxu.smarthomeunity.model.vo.device.DeviceInfoVO;
+import com.anxu.smarthomeunity.model.vo.user.UserFamilyRoomVO;
 import com.anxu.smarthomeunity.model.vo.user.UserFamilyVO;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface DeviceService {
     boolean deleteDevice(Integer deviceId);
     //查询用户所有家庭信息
     List<UserFamilyVO> queryMyFamily(Integer userId);
+    //查询家庭匹配房间列表
+    List<UserFamilyRoomVO> queryMyRoomList(Integer familyId);
 }
