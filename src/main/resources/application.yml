@@ -2,7 +2,7 @@ spring:
   main:
     allow-circular-references: true
   application:
-    name: SmartHomeUnity
+    name: LiVi
   datasource:
     # 配置数据库连接，允许批量查询
     url: jdbc:mysql://47.93.213.152:3307/smarthomeunity?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true
@@ -36,7 +36,7 @@ jwt:
   expire: 3600000
 # 配置MyBatis-Plus
 mybatis-plus:
-  type-aliases-package: com.anxu.smarthomeunity.pojo
+  type-aliases-package: com.anxu.livi.pojo
   configuration:
     map-underscore-to-camel-case: true
 #配置线程池（.yml 里用短横线，Java 里用驼峰，Spring 会自动映射）

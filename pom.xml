@@ -9,10 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.anxu</groupId>
-    <artifactId>SmartHomeUnity</artifactId>
+    <artifactId>LiVi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>SmartHomeUnity</name>
-    <description>SmartHomeUnity</description>
     <url/>
     <licenses>
         <license/>
