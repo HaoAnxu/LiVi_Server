@@ -1,10 +1,11 @@
 package com.anxu.livi.controller;
 
+import cn.hutool.db.PageResult;
+import com.anxu.livi.model.dto.wePost.PageDTO;
 import com.anxu.livi.model.dto.wePost.PostCommentDTO;
 import com.anxu.livi.model.dto.wePost.PostInfoDTO;
 import com.anxu.livi.model.result.Result;
-import com.anxu.livi.model.vo.wePost.PostCommentVO;
-import com.anxu.livi.model.vo.wePost.PostInfoVO;
+import com.anxu.livi.model.vo.wePost.*;
 import com.anxu.livi.service.WePostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +26,35 @@ public class WePostController {
     @Autowired
     private WePostService wePostService;
 
+    //查询圈子列表
+    @PostMapping("/wePost/queryCircleList")
+    private Result listWePostCircle() {
+        log.info("查询圈子列表,");
+        List<PostCircleVO> postList = wePostService.listWePostCircle();
+        return Result.success(postList);
+    }
+
+    //查询圈子详情
+    @PostMapping("/wePost/queryCircleDetail")
+    public Result detailWePostCircle(@RequestParam Integer circleId) {
+        log.info("查询圈子详情, circleId: {}", circleId);
+        PostCircleVO postCircleVO = wePostService.detailWePostCircle(circleId);
+        return Result.success(postCircleVO);
+    }
+
     // 查询帖子列表
     @PostMapping("/wePost/queryPostList")
-    public Result listWePost(@RequestParam(required = false) Integer page,
-                             @RequestParam(required = false) Integer pageSize) {
+    public Result listWePost(@RequestBody PageDTO pageDTO) {
         log.info("查询帖子列表");
-        List<PostInfoVO> postList = wePostService.listWePost(page, pageSize);
+        List<PostInfoVO> postList = wePostService.listWePost(pageDTO);
         return Result.success(postList);
     }
 
     // 查询帖子根据userId
     @PostMapping("/wePost/queryPostListByUserId")
-    public Result listWePostByUserId(@RequestParam Integer userId,
-                                     @RequestParam(required = false) Integer page,
-                                     @RequestParam(required = false) Integer pageSize) {
-        log.info("查询用户帖子列表, userId: {}, page: {}, pageSize: {}", userId, page, pageSize);
-        List<PostInfoVO> postList = wePostService.listWePostByUserId(userId, page, pageSize);
+    public Result listWePostByUserId(@RequestBody PageDTO pageDTO) {
+        log.info("查询用户帖子列表, userId: {}, page: {}, pageSize: {}", pageDTO.getId(), pageDTO.getPage(), pageDTO.getPageSize());
+        List<PostInfoVO> postList = wePostService.listWePostByUserId(pageDTO);
         return Result.success(postList);
     }
 
@@ -54,11 +68,9 @@ public class WePostController {
 
     // 分页查询帖子评论列表
     @PostMapping("/wePost/comment/queryCommentList")
-    public Result listWePostComment(@RequestParam Integer postId,
-                                    @RequestParam(required = false) Integer page,
-                                    @RequestParam(required = false) Integer pageSize) {
-        log.info("分页查询帖子评论列表, postId: {}, page: {}, pageSize: {}", postId, page, pageSize);
-        List<PostCommentVO> postCommentVOList = wePostService.listWePostComment(postId, page, pageSize);
+    public Result listWePostComment(@RequestBody PageDTO pageDTO) {
+        log.info("分页查询帖子评论列表, postId: {}, page: {}, pageSize: {}", pageDTO.getId(), pageDTO.getPage(), pageDTO.getPageSize());
+        List<PostCommentVO> postCommentVOList = wePostService.listWePostComment(pageDTO);
         return Result.success(postCommentVOList);
     }
 
@@ -104,5 +116,21 @@ public class WePostController {
             return Result.success("删除成功");
         }
         return Result.error("删除失败");
+    }
+
+    // 查询3张轮播图片
+    @PostMapping("/wePost/queryCarouselImageList")
+    public Result listCarousel() {
+        log.info("查询轮播图片");
+        List<PostCarouselVO> postList = wePostService.listCarousel();
+        return Result.success(postList);
+    }
+
+    // 查询最新5条热点
+    @PostMapping("/wePost/queryHotNewsList")
+    public Result listHotNews() {
+        log.info("查询最新5条热点");
+        List<PostInfoVO> postList = wePostService.listHotNews();
+        return Result.success(postList);
     }
 }

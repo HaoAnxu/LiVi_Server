@@ -23,6 +23,8 @@ public class PostCircleEntity {
 
     private String circleDesc; // 圈子描述
 
+    private String circleAvatar; // 圈子头像
+
     private LocalDateTime createTime; // 创建时间
 
     private LocalDateTime updateTime; // 更新时间

@@ -1,9 +1,9 @@
 package com.anxu.livi.service;
 
+import com.anxu.livi.model.dto.wePost.PageDTO;
 import com.anxu.livi.model.dto.wePost.PostCommentDTO;
 import com.anxu.livi.model.dto.wePost.PostInfoDTO;
-import com.anxu.livi.model.vo.wePost.PostCommentVO;
-import com.anxu.livi.model.vo.wePost.PostInfoVO;
+import com.anxu.livi.model.vo.wePost.*;
 
 import java.util.List;
 
@@ -14,20 +14,21 @@ import java.util.List;
  * @Date: 2025/12/19 14:44
  */
 public interface WePostService {
+
     // 查询帖子列表
-    List<PostInfoVO> listWePost(Integer page, Integer pageSize);
+    List<PostInfoVO> listWePost(PageDTO pageDTO);
 
     // 查询帖子详情
     PostInfoVO detailWePost(Integer postId);
 
     // 查询帖子评论列表
-    List<PostCommentVO> listWePostComment(Integer postId, Integer page, Integer pageSize);
+    List<PostCommentVO> listWePostComment(PageDTO pageDTO);
 
     // 创建帖子
     boolean saveWePost(PostInfoDTO postInfoDTO);
 
     // 查询用户帖子列表
-    List<PostInfoVO> listWePostByUserId(Integer userId, Integer page, Integer pageSize);
+    List<PostInfoVO> listWePostByUserId(PageDTO pageDTO);
 
     // 发评论
     boolean saveWePostComment(PostCommentDTO postCommentDTO);
@@ -37,4 +38,16 @@ public interface WePostService {
 
     // 删除评论根据commentId
     boolean deleteWePostComment(Integer commentId);
+
+    // 查询圈子列表
+    List<PostCircleVO> listWePostCircle();
+
+    // 查询圈子详情
+    PostCircleVO detailWePostCircle(Integer circleId);
+
+    // 查询3张轮播图片
+    List<PostCarouselVO> listCarousel();
+
+    // 查询最新5条热点
+    List<PostInfoVO> listHotNews();
 }
