@@ -1,6 +1,5 @@
 package com.anxu.livi.controller;
-
-import cn.hutool.db.PageResult;
+import com.anxu.livi.model.result.PageResult;
 import com.anxu.livi.model.dto.wePost.PageDTO;
 import com.anxu.livi.model.dto.wePost.PostCommentDTO;
 import com.anxu.livi.model.dto.wePost.PostInfoDTO;
@@ -26,12 +25,20 @@ public class WePostController {
     @Autowired
     private WePostService wePostService;
 
-    //查询圈子列表
+    //查询圈子列表-随机4个
     @PostMapping("/wePost/queryCircleList")
     private Result listWePostCircle() {
         log.info("查询圈子列表,");
         List<PostCircleVO> postList = wePostService.listWePostCircle();
         return Result.success(postList);
+    }
+
+    //查询圈子列表-根据userId
+    @PostMapping("/wePost/queryCircleListByUserId")
+    private Result listWePostCircleByUserId(@RequestBody PageDTO pageDTO) {
+        log.info("查询圈子列表-根据userId, userId: {}, page: {}, pageSize: {}", pageDTO.getId(), pageDTO.getPage(), pageDTO.getPageSize());
+        PageResult pageResult = wePostService.listWePostCircleByUserId(pageDTO);
+        return Result.success(pageResult);
     }
 
     //查询圈子详情
@@ -55,6 +62,14 @@ public class WePostController {
     public Result listWePostByUserId(@RequestBody PageDTO pageDTO) {
         log.info("查询用户帖子列表, userId: {}, page: {}, pageSize: {}", pageDTO.getId(), pageDTO.getPage(), pageDTO.getPageSize());
         List<PostInfoVO> postList = wePostService.listWePostByUserId(pageDTO);
+        return Result.success(postList);
+    }
+
+    // 查询帖子根据circleId
+    @PostMapping("/wePost/queryPostListByCircleId")
+    public Result listWePostByCircleId(@RequestBody PageDTO pageDTO) {
+        log.info("查询圈子帖子列表, circleId: {}, page: {}, pageSize: {}", pageDTO.getId(), pageDTO.getPage(), pageDTO.getPageSize());
+        List<PostInfoVO> postList = wePostService.listWePostByCircleId(pageDTO);
         return Result.success(postList);
     }
 

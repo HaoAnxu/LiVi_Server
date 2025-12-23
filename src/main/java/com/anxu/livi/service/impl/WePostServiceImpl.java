@@ -1,7 +1,6 @@
 package com.anxu.livi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.system.UserInfo;
 import com.anxu.livi.mapper.user.UserMapper;
 import com.anxu.livi.mapper.wePost.*;
 import com.anxu.livi.model.dto.wePost.PageDTO;
@@ -9,16 +8,17 @@ import com.anxu.livi.model.dto.wePost.PostCommentDTO;
 import com.anxu.livi.model.dto.wePost.PostInfoDTO;
 import com.anxu.livi.model.entity.user.UserInfoEntity;
 import com.anxu.livi.model.entity.wePost.*;
+import com.anxu.livi.model.result.PageResult;
 import com.anxu.livi.model.vo.wePost.*;
 import com.anxu.livi.service.WePostService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +41,8 @@ public class WePostServiceImpl implements WePostService {
     private UserMapper userMapper;
     @Autowired
     private PostCarouselMapper postCarouselMapper;
+    @Autowired
+    private PostCircleUserMapper postCircleUserMapper;
 
 
 
@@ -74,7 +76,7 @@ public class WePostServiceImpl implements WePostService {
         return postInfoVO;
     }
 
-    // 查询用户帖子列表
+    // 查询用户加入的帖子列表
     @Override
     public List<PostInfoVO> listWePostByUserId(PageDTO pageDTO) {
         if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
@@ -89,6 +91,31 @@ public class WePostServiceImpl implements WePostService {
         // 分页查询用户帖子列表
         postInfoMapper.selectPage(pagePostInfoEntity, queryWrapper);
         List<PostInfoVO> postInfoVO = BeanUtil.copyToList(pagePostInfoEntity.getRecords(), PostInfoVO.class);
+        for (PostInfoVO infoVO : postInfoVO) {
+            // 查询圈子名称
+            PostCircleEntity postCircleEntity = postCircleMapper.selectById(infoVO.getCircleId());
+            infoVO.setCircleName(postCircleEntity.getCircleName());
+            // 查询用户信息
+            UserInfoEntity userEntity = userMapper.selectById(infoVO.getUserId());
+            infoVO.setUserName(userEntity.getUsername());
+            infoVO.setUserAvatar(userEntity.getAvatar());
+        }
+        return postInfoVO;
+    }
+
+    //根据circleId查询帖子信息列表
+    @Override
+    public List<PostInfoVO> listWePostByCircleId(PageDTO pageDTO) {
+        if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
+            pageDTO.setPage(1);
+            pageDTO.setPageSize(10);
+        }
+        Page<PostInfoEntity> page = new Page<>(pageDTO.getPage(),pageDTO.getPageSize());
+        QueryWrapper<PostInfoEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("circle_id",pageDTO.getId());
+        queryWrapper.orderByDesc("create_time");
+        postInfoMapper.selectPage(page, queryWrapper);
+        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(page.getRecords(), PostInfoVO.class);
         for (PostInfoVO infoVO : postInfoVO) {
             // 查询圈子名称
             PostCircleEntity postCircleEntity = postCircleMapper.selectById(infoVO.getCircleId());
@@ -258,4 +285,28 @@ public class WePostServiceImpl implements WePostService {
         List<PostInfoEntity> postInfoEntityList = postInfoMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(postInfoEntityList, PostInfoVO.class);
     }
+
+    // 查询用户加入的圈子列表
+    @Override
+    public PageResult listWePostCircleByUserId(PageDTO pageDTO) {
+        // 1. 分页参数默认值处理
+        if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
+            pageDTO.setPage(1);
+            pageDTO.setPageSize(4);
+        }
+
+        // startPage(页码, 页大小)，页码从1开始
+        PageHelper.startPage(pageDTO.getPage(), pageDTO.getPageSize());
+        // 执行查询（PageHelper会自动拦截这条SQL，添加分页条件）
+        List<PostCircleEntity> list = postCircleUserMapper.selectUserCircleInfo(pageDTO.getId());
+        System.out.println(list);
+        // 将查询结果包装为Page对象，获取分页信息（总数、分页数据）
+        PageInfo<PostCircleEntity> pageInfo = new PageInfo<>(list);
+        PageResult pageResult = new PageResult();
+        pageResult.setTotal(pageInfo.getTotal()); // 总条数
+        pageResult.setRows(BeanUtil.copyToList(pageInfo.getList(), PostCircleVO.class)); // 分页数据
+
+        return pageResult;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.anxu.livi.service;
 
+import com.anxu.livi.model.result.PageResult;
 import com.anxu.livi.model.dto.wePost.PageDTO;
 import com.anxu.livi.model.dto.wePost.PostCommentDTO;
 import com.anxu.livi.model.dto.wePost.PostInfoDTO;
@@ -50,4 +51,10 @@ public interface WePostService {
 
     // 查询最新5条热点
     List<PostInfoVO> listHotNews();
+
+    // 查询用户加入的圈子列表
+    PageResult listWePostCircleByUserId(PageDTO pageDTO);
+
+    // 根据circleId查询帖子列表
+    List<PostInfoVO> listWePostByCircleId(PageDTO pageDTO);
 }
