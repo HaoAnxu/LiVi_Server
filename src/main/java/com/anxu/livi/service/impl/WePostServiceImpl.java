@@ -9,6 +9,7 @@ import com.anxu.livi.model.dto.wePost.PostInfoDTO;
 import com.anxu.livi.model.entity.user.UserInfoEntity;
 import com.anxu.livi.model.entity.wePost.*;
 import com.anxu.livi.model.result.PageResult;
+import com.anxu.livi.model.vo.user.UserInfoVO;
 import com.anxu.livi.model.vo.wePost.*;
 import com.anxu.livi.service.WePostService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -19,8 +20,9 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 【WePost相关服务实现类】
@@ -45,8 +47,7 @@ public class WePostServiceImpl implements WePostService {
     private PostCircleUserMapper postCircleUserMapper;
 
 
-
-    // 分页查询帖子列表
+    // 分页查询所有帖子信息列表，包括对应的圈子信息，用户信息
     @Override
     public List<PostInfoVO> listWePost(PageDTO pageDTO) {
         if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
@@ -63,20 +64,57 @@ public class WePostServiceImpl implements WePostService {
         // 分页查询帖子列表
         postInfoMapper.selectPage(pagePostInfoEntity, queryWrapper);
 
-        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(pagePostInfoEntity.getRecords(), PostInfoVO.class);
+        List<PostInfoEntity> records = pagePostInfoEntity.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            return Collections.emptyList();
+        }
+
+        //提取所有circleId
+        Set<Integer> circleIds = records.stream()
+                .map(PostInfoEntity::getCircleId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        //提取所有userId
+        Set<Integer> userIds = records.stream()
+                .map(PostInfoEntity::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        //批量查询圈子信息
+        Map<Integer, String> circleNameMap = new HashMap<>();
+        if (!circleIds.isEmpty()) {
+            List<PostCircleEntity> circleEntities = postCircleMapper.selectBatchIds(circleIds);
+            circleNameMap = circleEntities.stream()
+                    .collect(Collectors.toMap(PostCircleEntity::getCircleId, PostCircleEntity::getCircleName));
+        }
+
+        //批量查询用户信息
+        Map<Integer, UserInfoVO> userInfoMap = new HashMap<>();
+        if (!userIds.isEmpty()) {
+            List<UserInfoEntity> userEntities = userMapper.selectBatchIds(userIds);
+            userInfoMap = userEntities.stream()
+                    .collect(Collectors.toMap(UserInfoEntity::getId, userEntity -> {
+                        UserInfoVO vo = new UserInfoVO();
+                        vo.setUsername(userEntity.getUsername());
+                        vo.setAvatar(userEntity.getAvatar());
+                        return vo;
+                    }));
+        }
+
+        //组装VO
+        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(records, PostInfoVO.class);
         for (PostInfoVO infoVO : postInfoVO) {
-            // 查询圈子名称
-            PostCircleEntity postCircleEntity = postCircleMapper.selectById(infoVO.getCircleId());
-            infoVO.setCircleName(postCircleEntity.getCircleName());
-            // 查询用户信息
-            UserInfoEntity userEntity = userMapper.selectById(infoVO.getUserId());
-            infoVO.setUserName(userEntity.getUsername());
-            infoVO.setUserAvatar(userEntity.getAvatar());
+            infoVO.setCircleName(circleNameMap.getOrDefault(infoVO.getCircleId(), ""));
+            UserInfoVO userVO = userInfoMap.get(infoVO.getUserId());
+            if (userVO != null) {
+                infoVO.setUserName(userVO.getUsername());
+                infoVO.setUserAvatar(userVO.getAvatar());
+            }
         }
         return postInfoVO;
     }
 
-    // 查询用户加入的帖子列表
+    // 根据userId分页查询用户发布的帖子信息列表，包括对应的圈子信息，用户信息
     @Override
     public List<PostInfoVO> listWePostByUserId(PageDTO pageDTO) {
         if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
@@ -84,46 +122,120 @@ public class WePostServiceImpl implements WePostService {
             pageDTO.setPageSize(10);
         }
         Page<PostInfoEntity> pagePostInfoEntity = new Page<>(pageDTO.getPage(), pageDTO.getPageSize());
-        // 分页查询用户帖子列表
+        //主查询
         QueryWrapper<PostInfoEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", pageDTO.getId());
         queryWrapper.orderByDesc("create_time");
-        // 分页查询用户帖子列表
         postInfoMapper.selectPage(pagePostInfoEntity, queryWrapper);
-        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(pagePostInfoEntity.getRecords(), PostInfoVO.class);
+
+        List<PostInfoEntity> records = pagePostInfoEntity.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            return Collections.emptyList();
+        }
+
+        //提取所有circleId
+        Set<Integer> circleIds = records.stream()
+                .map(PostInfoEntity::getCircleId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        //提取所有userId
+        Set<Integer> userIds = records.stream()
+                .map(PostInfoEntity::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        //批量查询圈子信息
+        Map<Integer, String> circleNameMap = new HashMap<>();
+        if (!circleIds.isEmpty()) {
+            List<PostCircleEntity> circleEntities = postCircleMapper.selectBatchIds(circleIds);
+            circleNameMap = circleEntities.stream()
+                    .collect(Collectors.toMap(PostCircleEntity::getCircleId, PostCircleEntity::getCircleName));
+        }
+
+        //批量查询用户信息
+        Map<Integer, UserInfoVO> userInfoMap = new HashMap<>();
+        if (!userIds.isEmpty()) {
+            List<UserInfoEntity> userEntities = userMapper.selectBatchIds(userIds);
+            userInfoMap = userEntities.stream()
+                    .collect(Collectors.toMap(UserInfoEntity::getId, userEntity -> {
+                        UserInfoVO vo = new UserInfoVO();
+                        vo.setUsername(userEntity.getUsername());
+                        vo.setAvatar(userEntity.getAvatar());
+                        return vo;
+                    }));
+        }
+
+        //组装VO
+        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(records, PostInfoVO.class);
         for (PostInfoVO infoVO : postInfoVO) {
-            // 查询圈子名称
-            PostCircleEntity postCircleEntity = postCircleMapper.selectById(infoVO.getCircleId());
-            infoVO.setCircleName(postCircleEntity.getCircleName());
-            // 查询用户信息
-            UserInfoEntity userEntity = userMapper.selectById(infoVO.getUserId());
-            infoVO.setUserName(userEntity.getUsername());
-            infoVO.setUserAvatar(userEntity.getAvatar());
+            infoVO.setCircleName(circleNameMap.getOrDefault(infoVO.getCircleId(), ""));
+            UserInfoVO userVO = userInfoMap.get(infoVO.getUserId());
+            if (userVO != null) {
+                infoVO.setUserName(userVO.getUsername());
+                infoVO.setUserAvatar(userVO.getAvatar());
+            }
         }
         return postInfoVO;
     }
 
-    //根据circleId查询帖子信息列表
+    //根据circleId分页查询社区包含的帖子信息列表，包括对应的圈子信息，用户信息
     @Override
     public List<PostInfoVO> listWePostByCircleId(PageDTO pageDTO) {
         if (pageDTO.getPage() == null || pageDTO.getPageSize() == null) {
             pageDTO.setPage(1);
             pageDTO.setPageSize(10);
         }
-        Page<PostInfoEntity> page = new Page<>(pageDTO.getPage(),pageDTO.getPageSize());
+        Page<PostInfoEntity> page = new Page<>(pageDTO.getPage(), pageDTO.getPageSize());
         QueryWrapper<PostInfoEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("circle_id",pageDTO.getId());
+        queryWrapper.eq("circle_id", pageDTO.getId());
         queryWrapper.orderByDesc("create_time");
         postInfoMapper.selectPage(page, queryWrapper);
-        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(page.getRecords(), PostInfoVO.class);
+        List<PostInfoEntity> records = page.getRecords();
+        if (CollectionUtils.isEmpty(records)) {
+            return Collections.emptyList();
+        }
+
+        //提取所有circleId
+        Set<Integer> circleIds = records.stream()
+                .map(PostInfoEntity::getCircleId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        //提取所有userId
+        Set<Integer> userIds = records.stream()
+                .map(PostInfoEntity::getUserId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        //批量查询圈子信息
+        Map<Integer, String> circleNameMap = new HashMap<>();
+        if (!circleIds.isEmpty()) {
+            List<PostCircleEntity> circleEntities = postCircleMapper.selectBatchIds(circleIds);
+            circleNameMap = circleEntities.stream()
+                    .collect(Collectors.toMap(PostCircleEntity::getCircleId, PostCircleEntity::getCircleName));
+        }
+
+        //批量查询用户信息
+        Map<Integer, UserInfoVO> userInfoMap = new HashMap<>();
+        if (!userIds.isEmpty()) {
+            List<UserInfoEntity> userEntities = userMapper.selectBatchIds(userIds);
+            userInfoMap = userEntities.stream()
+                    .collect(Collectors.toMap(UserInfoEntity::getId, userEntity -> {
+                        UserInfoVO vo = new UserInfoVO();
+                        vo.setUsername(userEntity.getUsername());
+                        vo.setAvatar(userEntity.getAvatar());
+                        return vo;
+                    }));
+        }
+
+        //组装VO
+        List<PostInfoVO> postInfoVO = BeanUtil.copyToList(records, PostInfoVO.class);
         for (PostInfoVO infoVO : postInfoVO) {
-            // 查询圈子名称
-            PostCircleEntity postCircleEntity = postCircleMapper.selectById(infoVO.getCircleId());
-            infoVO.setCircleName(postCircleEntity.getCircleName());
-            // 查询用户信息
-            UserInfoEntity userEntity = userMapper.selectById(infoVO.getUserId());
-            infoVO.setUserName(userEntity.getUsername());
-            infoVO.setUserAvatar(userEntity.getAvatar());
+            infoVO.setCircleName(circleNameMap.getOrDefault(infoVO.getCircleId(), ""));
+            UserInfoVO userVO = userInfoMap.get(infoVO.getUserId());
+            if (userVO != null) {
+                infoVO.setUserName(userVO.getUsername());
+                infoVO.setUserAvatar(userVO.getAvatar());
+            }
         }
         return postInfoVO;
     }
