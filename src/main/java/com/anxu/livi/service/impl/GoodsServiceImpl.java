@@ -1,13 +1,18 @@
 package com.anxu.livi.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.anxu.livi.mapper.goods.GoodsCommentMapper;
 import com.anxu.livi.mapper.goods.GoodsImageMapper;
 import com.anxu.livi.mapper.goods.GoodsMapper;
+import com.anxu.livi.mapper.user.UserMapper;
+import com.anxu.livi.model.entity.goods.GoodsCommentEntity;
 import com.anxu.livi.model.result.PageResult;
 import com.anxu.livi.model.vo.goods.GoodsBriefVO;
+import com.anxu.livi.model.vo.goods.GoodsCommentsVO;
 import com.anxu.livi.model.vo.goods.GoodsDetailVO;
 import com.anxu.livi.model.entity.goods.GoodsEntity;
 import com.anxu.livi.model.entity.goods.GoodsImageEntity;
+import com.anxu.livi.model.vo.goods.GoodsImageVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +40,10 @@ public class GoodsServiceImpl implements GoodsService {
     private GoodsMapper goodsMapper;
     @Autowired
     private GoodsImageMapper goodsImageMapper;
+    @Autowired
+    private GoodsCommentMapper goodsCommentMapper;
+    @Autowired
+    private UserMapper userMapper;
 
 
     //    查询商品列表
@@ -116,8 +125,17 @@ public class GoodsServiceImpl implements GoodsService {
         //再查图片
         QueryWrapper<GoodsImageEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("goods_id", goodsId);
+        // 执行查询
         List<GoodsImageEntity> goodsImageEntityList = this.goodsImageMapper.selectList(queryWrapper);
-        goodsDetailVO.setGoodsImageEntityList(goodsImageEntityList);
+        //将goodsImageEntity转换为goodsImageVO
+        List<GoodsImageVO> goodsImageVOList = new ArrayList<>();
+        for (GoodsImageEntity goodsImageEntity : goodsImageEntityList) {
+            GoodsImageVO goodsImageVO = BeanUtil.copyProperties(goodsImageEntity, GoodsImageVO.class);
+            goodsImageVOList.add(goodsImageVO);
+        }
+        goodsDetailVO.setGoodsImageVOList(goodsImageVOList);
+        //再查评论和对应的用户信息
+
         return goodsDetailVO;
     }
 

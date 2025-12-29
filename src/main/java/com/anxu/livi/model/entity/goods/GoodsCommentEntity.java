@@ -27,8 +27,6 @@ public class GoodsCommentEntity {
 
     private Double commentScore;//评论评分
 
-    private Integer commentLikeNum;//评论点赞数量
-
     private LocalDateTime createTime;//创建时间
 
     private LocalDateTime updateTime;//更新时间
