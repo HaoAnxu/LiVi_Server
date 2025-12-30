@@ -36,8 +36,6 @@ public class GoodsEntity {
 
     private Double goodsScore;//商品评分
 
-    private Integer goodsCommentCount;//商品评论数量
-
     private LocalDateTime createTime;//创建时间
 
     private LocalDateTime updateTime;//更新时间

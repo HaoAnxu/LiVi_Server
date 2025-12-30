@@ -1,5 +1,6 @@
 package com.anxu.livi.model.vo.goods;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,6 @@ public class GoodsCommentsVO {
 
     private Double commentScore;//评论评分
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;//创建时间
 }

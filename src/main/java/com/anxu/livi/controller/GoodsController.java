@@ -1,7 +1,9 @@
 package com.anxu.livi.controller;
 
 import com.anxu.livi.common.annotation.OperateLog;
+import com.anxu.livi.model.dto.wePost.PageDTO;
 import com.anxu.livi.model.vo.goods.GoodsBriefVO;
+import com.anxu.livi.model.vo.goods.GoodsCommentsVO;
 import com.anxu.livi.model.vo.goods.GoodsDetailVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class GoodsController {
 
     //首页方法-查询20个热卖商品
     @GetMapping("/goods/queryHotGoods")
-    public Result queryHotGoods(){
+    public Result queryHotGoods() {
         log.info("查询12个热卖商品");
         List<GoodsBriefVO> goodsBriefVOList = goodsService.queryHotGoods();
         return Result.success(goodsBriefVOList);
@@ -36,31 +38,27 @@ public class GoodsController {
     //    查询商品列表
     @OperateLog("查询商品列表")
     @PostMapping("/goods/queryGoods")
-    public Result queryGoods(@RequestBody GoodsQueryDTO goodsQueryDto){
+    public Result queryGoods(@RequestBody GoodsQueryDTO goodsQueryDto) {
         log.info("查询商品信息，参数：{}", goodsQueryDto);
         PageResult pageResult = goodsService.queryGoods(goodsQueryDto);
         return Result.success(pageResult);
     }
 
-    //    更新商品评分和评论数量
-    @OperateLog("更新商品评分和评论数量")
-    @GetMapping("/goods/resetScore")
-    public Result resetScore(){
-        log.info("更新商品评分和评论数量");
-        Integer updateProductCount = goodsService.resetScore();
-        if(updateProductCount > 0) {
-            return Result.success(updateProductCount);
-        } else {
-            return Result.error("更新商品评分和评论数量失败");
-        }
-    }
-
     //    查询单个商品详情
     @OperateLog("查询单个商品详情")
     @PostMapping("/goods/queryGoodsDetail")
-    public Result queryGoodsDetail(@RequestParam Long goodsId){
-        log.info("查询商品详情，参数：{}",goodsId);
+    public Result queryGoodsDetail(@RequestParam Long goodsId) {
+        log.info("查询商品详情，参数：{}", goodsId);
         GoodsDetailVO goodsDetailVO = goodsService.queryGoodsDetail(goodsId);
         return Result.success(goodsDetailVO);
+    }
+
+    // 查询单个商品评论列表
+    @OperateLog("查询单个商品评论列表")
+    @PostMapping("/goods/queryGoodsComment")
+    public Result queryGoodsComment(@RequestBody PageDTO pageDTO) {
+        log.info("查询商品评论列表，参数：{}", pageDTO);
+        PageResult pageResult = goodsService.queryGoodsComment(pageDTO);
+        return Result.success(pageResult);
     }
 }

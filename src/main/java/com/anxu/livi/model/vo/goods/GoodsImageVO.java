@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoodsImageVO {
-    private Integer id; // 商品图片ID
+    private Integer imageId; // 商品图片ID
     private String imageUrl; // 商品图片URL
 }
