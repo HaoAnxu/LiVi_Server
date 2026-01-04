@@ -22,11 +22,7 @@ public class GoodsEntity {
 
     private String goodsType;//商品类型-关联设备类型
 
-    private Double goodsPrice;//商品价格
-
     private String goodsDept;//商品所属部门
-
-    private String goodsStock;//商品库存
 
     private Integer goodsSales;//商品销售量
 

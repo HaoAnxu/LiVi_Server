@@ -1,12 +1,11 @@
 package com.anxu.livi.model.vo.goods;
 
-import com.anxu.livi.model.entity.goods.GoodsCommentEntity;
-import com.anxu.livi.model.entity.goods.GoodsImageEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,8 +22,7 @@ public class GoodsDetailVO {
     private Integer goodsId;//商品id,主键,自增
     private String goodsName;//商品名称
     private String goodsType;//商品类型-关联设备类型
-    private Double goodsPrice;//商品价格
-    private String goodsStock;//商品库存
+    private BigDecimal goodsPrice;//商品最低价格
     private Integer goodsSales;//商品销售量
     private String goodsIntro;//商品介绍
     private String goodsThumbnail;//商品缩略图
@@ -32,6 +30,8 @@ public class GoodsDetailVO {
     private Double goodsScore;//商品评分
     private String goodsDept;//商品所属部门
     private List<GoodsImageVO> goodsImageVOList;//商品图片列表
+    private List<GoodsModelVO> goodsModelVOList;//商品型号列表
+    private List<GoodsStyleVO> goodsStyleVOList;//商品款式列表
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;//创建时间
 }
