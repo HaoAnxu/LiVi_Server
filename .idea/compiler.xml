@@ -9,7 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="livi_model" />
       </profile>
-      <profile name="Annotation profile for LiVi" enabled="true">
+      <profile name="Annotation profile for livi_server" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />

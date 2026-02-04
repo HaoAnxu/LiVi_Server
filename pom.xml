@@ -3,6 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- Spring Boot 父依赖 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -10,17 +12,19 @@
         <relativePath/>
     </parent>
 
+    <!-- 项目基础信息 -->
     <groupId>com.anxu</groupId>
-    <artifactId>LiVi</artifactId>
+    <artifactId>LiVi_Server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>LiVi</name>
-    <description>LiVi父工程-聚合所有子模块+管理公共依赖</description>
+    <name>livi_server</name>
 
+    <!-- 全局属性配置 -->
     <properties>
         <java.version>17</java.version>
     </properties>
 
+    <!-- 全局公共依赖 -->
     <dependencies>
         <!-- lombok -->
         <dependency>
@@ -28,18 +32,21 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <!-- mybatis-plus-boot-starter -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.5</version>
         </dependency>
+
         <!-- commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+
         <!-- spring-boot-starter-test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,6 +55,7 @@
         </dependency>
     </dependencies>
 
+    <!-- 子模块声明 -->
     <modules>
         <module>livi_model</module>
         <module>livi_module_user</module>
